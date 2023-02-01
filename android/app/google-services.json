@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "802905108935",
+    "firebase_url": "https://orcamento-b37bb.firebaseio.com",
+    "project_id": "orcamento-b37bb",
+    "storage_bucket": "orcamento-b37bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802905108935:android:ee88c0deed74acd037e9e2",
+        "android_client_info": {
+          "package_name": "com.barmittel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802905108935-nfe7b8741dqf2ldehlmn31nqgpsp3j03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf9A8WgV3Ha8gaxUZzNb3jhPMlDig4HOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802905108935-nfe7b8741dqf2ldehlmn31nqgpsp3j03.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802905108935:android:e08a2cb1c2e1a09c37e9e2",
+        "android_client_info": {
+          "package_name": "com.example.budget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802905108935-jobs0h4u3na3tbhpm6qfbk9fcmljp4fa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.budget",
+            "certificate_hash": "2724f7de5b130231cc4cffd134eb47f16986aaf7"
+          }
+        },
+        {
+          "client_id": "802905108935-nfe7b8741dqf2ldehlmn31nqgpsp3j03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf9A8WgV3Ha8gaxUZzNb3jhPMlDig4HOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802905108935-nfe7b8741dqf2ldehlmn31nqgpsp3j03.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
