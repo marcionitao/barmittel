@@ -7,7 +7,7 @@ type ParamsProps = {
   name: string
 }
 
-const ScreenB = () => {
+const MyForm = () => {
   //
   const route = useRoute()
   const { name } = route.params as ParamsProps
@@ -26,4 +26,4 @@ const ScreenB = () => {
   )
 }
 
-export default ScreenB
+export default MyForm
