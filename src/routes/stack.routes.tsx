@@ -11,19 +11,19 @@ export function StackRoutes() {
       <Screen
         name='myHome'
         options={{
-          title: 'home',
-          headerShown: false,
+          title: 'My Budget',
+          headerShown: true,
           headerTitleAlign: 'left',
-          headerStyle: { backgroundColor: 'white' },
+          headerStyle: { backgroundColor: '#F8B600' },
         }}
         component={myHome}
       />
       <Screen
         name='myForm'
         options={{
-          title: 'form',
+          title: 'Add/Edit',
           headerTitleAlign: 'center',
-          headerStyle: { backgroundColor: 'white' },
+          headerStyle: { backgroundColor: '#F8B600' },
         }}
         component={myForm}
       />

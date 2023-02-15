@@ -17,7 +17,7 @@ const MyForm = () => {
       style={{
         flex: 1,
         backgroundColor: 'blue',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
       }}
     >

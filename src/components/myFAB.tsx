@@ -20,7 +20,7 @@ const MyFAB = () => {
         borderRadius: 10,
         position: 'absolute',
         bottom: 50,
-        right: 30,
+        right: 10,
         paddingHorizontal: 20,
         paddingVertical: 10,
       }}
@@ -91,7 +91,7 @@ const MyFAB = () => {
           borderRadius='full'
           size='lg'
           onPress={onToggle}
-          bg='green.600'
+          bg='#006E61'
           icon={<Icon as={MaterialIcons} size='6' name='add' color='warmGray.50' />}
         />
       </HStack>
