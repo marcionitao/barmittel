@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { Box, HStack, Icon, IconButton, Stagger, useDisclose, VStack } from 'native-base'
 import React from 'react'
@@ -62,68 +62,14 @@ const MyFAB = () => {
           <IconButton
             mb='4'
             variant='solid'
-            bg='indigo.500'
-            colorScheme='indigo'
+            bg='green.500'
+            colorScheme='green'
             borderRadius='full'
             onPress={() => {
               openScreen()
               onToggle()
             }}
-            icon={
-              <Icon
-                as={MaterialIcons}
-                size='6'
-                name='location-pin'
-                _dark={{
-                  color: 'warmGray.50',
-                }}
-                color='warmGray.50'
-              />
-            }
-          />
-          <IconButton
-            mb='4'
-            variant='solid'
-            bg='yellow.400'
-            colorScheme='yellow'
-            borderRadius='full'
-            onPress={() => {
-              openScreen()
-              onToggle()
-            }}
-            icon={
-              <Icon
-                as={MaterialCommunityIcons}
-                _dark={{
-                  color: 'warmGray.50',
-                }}
-                size='6'
-                name='microphone'
-                color='warmGray.50'
-              />
-            }
-          />
-          <IconButton
-            mb='4'
-            variant='solid'
-            bg='teal.400'
-            colorScheme='teal'
-            borderRadius='full'
-            onPress={() => {
-              openScreen()
-              onToggle()
-            }}
-            icon={
-              <Icon
-                as={MaterialCommunityIcons}
-                _dark={{
-                  color: 'warmGray.50',
-                }}
-                size='6'
-                name='video'
-                color='warmGray.50'
-              />
-            }
+            icon={<Icon as={MaterialIcons} size='6' name='arrow-circle-up' color='warmGray.50' />}
           />
           <IconButton
             mb='4'
@@ -135,17 +81,7 @@ const MyFAB = () => {
               openScreen()
               onToggle()
             }}
-            icon={
-              <Icon
-                as={MaterialIcons}
-                size='6'
-                name='photo-library'
-                _dark={{
-                  color: 'warmGray.50',
-                }}
-                color='warmGray.50'
-              />
-            }
+            icon={<Icon as={MaterialIcons} size='6' name='arrow-circle-down' color='warmGray.50' />}
           />
         </Stagger>
       </Box>
@@ -156,17 +92,7 @@ const MyFAB = () => {
           size='lg'
           onPress={onToggle}
           bg='green.600'
-          icon={
-            <Icon
-              as={MaterialCommunityIcons}
-              size='6'
-              name='plus'
-              color='warmGray.50'
-              _dark={{
-                color: 'warmGray.50',
-              }}
-            />
-          }
+          icon={<Icon as={MaterialIcons} size='6' name='add' color='warmGray.50' />}
         />
       </HStack>
     </VStack>
