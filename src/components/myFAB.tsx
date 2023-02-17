@@ -7,7 +7,7 @@ const MyFAB = () => {
   const navigation = useNavigation()
   const openScreen = () => {
     // navigation.navigate('screenB');
-    navigation.navigate('myForm', { name: 'Marcio' })
+    navigation.navigate('myForm')
   }
 
   const { isOpen, onToggle } = useDisclose()
