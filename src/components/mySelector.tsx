@@ -10,7 +10,7 @@ const MySelector = ({ label, value }: selectorProps) => {
   const [selector, setSelector] = useState(value)
   return (
     <Center>
-      <Box w='100%'>
+      <Box w='100%' marginBottom={2} marginTop={1}>
         <Select
           fontSize={'lg'}
           color={'green.700'}

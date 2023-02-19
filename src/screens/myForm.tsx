@@ -1,6 +1,5 @@
-import { SafeAreaView, Text } from 'react-native'
-
 import { useRoute } from '@react-navigation/native'
+import { Box, Text, VStack } from 'native-base'
 
 // definindo o tipo para evitar erros
 type ParamsProps = {
@@ -10,19 +9,19 @@ type ParamsProps = {
 const MyForm = () => {
   //
   const route = useRoute()
-  const { name } = route.params as ParamsProps
+  // const { name } = route.params as ParamsProps
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'blue',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
-    >
-      <Text style={{ fontSize: 30, color: 'white' }}>{name}</Text>
-    </SafeAreaView>
+    <Box p='4' flex={1} bgColor={'#FFF'}>
+      <VStack>
+        <Box>
+          <Text>meu texto aqui</Text>
+          <Text>meu texto aqui</Text>
+          <Text>meu texto aqui</Text>
+          <Text>meu texto aqui</Text>
+        </Box>
+      </VStack>
+    </Box>
   )
 }
 
