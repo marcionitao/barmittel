@@ -1,24 +1,23 @@
 import { useRoute } from '@react-navigation/native'
 import { Box, Text, VStack } from 'native-base'
+import { useState } from 'react'
 
-// definindo o tipo para evitar erros
-type ParamsProps = {
-  name: string
+interface MovimentosProps {
+  route: any
 }
 
-const MyForm = () => {
-  //
-  const route = useRoute()
-  // const { name } = route.params as ParamsProps
+const MyForm = ({ route }: MovimentosProps) => {
+  route = useRoute()
+  const [carteira, setCarteira] = useState(route.params ? route.params : {})
 
   return (
     <Box p='4' flex={1} bgColor={'#FFF'}>
       <VStack>
         <Box>
-          <Text>meu texto aqui</Text>
-          <Text>meu texto aqui</Text>
-          <Text>meu texto aqui</Text>
-          <Text>meu texto aqui</Text>
+          <Text>{carteira.id}</Text>
+          <Text>{carteira.fullName}</Text>
+          <Text>{carteira.recentText}</Text>
+          <Text>{carteira.timeStamp}</Text>
         </Box>
       </VStack>
     </Box>

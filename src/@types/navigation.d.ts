@@ -9,7 +9,7 @@ export type Budget = {
 
 export type BudgetContextType = {
   movements: Budget[]
-  setMovement: (movements: Budget[]) => void
+  //setMovement: (movements: Budget[]) => void
   addMovement: (newMovement: Budget) => void
   removeMovement: (movementId: string) => void
   updateMovement: (movementId: string) => void
@@ -19,7 +19,7 @@ export declare global {
   namespace ReactNavigation {
     interface RootParamList {
       myHome: undefined
-      myForm: Budget
+      myForm: undefined
     }
   }
 }

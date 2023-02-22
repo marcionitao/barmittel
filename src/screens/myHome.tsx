@@ -1,22 +1,30 @@
 import { Entypo, MaterialIcons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 import { Avatar, Badge, Box, HStack, Icon, Pressable, Spacer, Text, VStack } from 'native-base'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import MyFAB from '../components/myFAB'
 import MySelector from '../components/mySelector'
 import { fakeData } from '../fakeData/data'
 
-const MyHome = () => {
+interface MovimentosProps {
+  navigation: any
+}
+
+const MyHome = ({ navigation }: MovimentosProps) => {
+  navigation = useNavigation()
   //
   const getMovimentItem = ({ item, index }) => {
     return (
-      <Box mb={1}>
+      <Box mt={1}>
         <Pressable
-          onPress={() => console.log('You touched me')}
+          onPress={() => {
+            navigation.navigate('myForm', item)
+          }}
           _light={{
             bg: 'white',
           }}
         >
-          <Box pl='4' pr='5' py='3' borderWidth={0.5} borderColor='grey.100'>
+          <Box pl='4' pr='5' py='3' borderTopWidth={0.3} borderColor='grey.50'>
             <HStack space={[4, 5]} justifyContent='space-between'>
               <Avatar
                 size='48px'
@@ -42,7 +50,7 @@ const MyHome = () => {
   }
 
   const renderHiddenItem = (data, rowMap) => (
-    <HStack flex='1' pl='2' borderWidth={0.5} borderColor='grey.100'>
+    <HStack flex='1' pl='2' mt={1} borderTopWidth={0.3} borderColor='grey.500'>
       <Pressable
         w='70'
         ml='auto'
