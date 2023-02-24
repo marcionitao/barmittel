@@ -1,4 +1,6 @@
-import { createContext, useState } from 'react'
+import moment from 'moment'
+import { createContext, useEffect, useState } from 'react'
+import firestore from '@react-native-firebase/firestore'
 import { Budget, BudgetContextType } from '../@types/navigation'
 
 // create context
@@ -13,6 +15,34 @@ export const BudgetContext = createContext<BudgetContextType>({
 export const BudgetProvider = ({ children }) => {
   // state
   const [movements, setMovements] = useState<Budget[]>([])
+
+  // get current date using moment.js
+  const currentDate = moment()
+
+  //get first month from current year using moment.js
+  const firstMonth = moment().year(currentDate.year()).month(0)
+
+  //get current month from current year using moment.js
+  const currentMonth = moment().year(currentDate.year()).month(currentDate.month())
+
+  useEffect(() => {
+    // get all movements from firestore
+    const db = firestore()
+      .collection('orcamento')
+      .orderBy('data', 'desc')
+      .where('data', '>=', firstMonth)
+      .where('data', '<=', currentMonth)
+      .onSnapshot((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Budget[]
+
+        setMovements(data)
+      })
+
+    return () => db()
+  }, [])
 
   // add movement
   const addMovement = (movement: Budget) => {

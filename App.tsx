@@ -1,10 +1,13 @@
 import { NativeBaseProvider } from 'native-base'
+import { BudgetProvider } from './src/context/budgetContext'
 import { Routes } from './src/routes'
 
 export default function App() {
   return (
-    <NativeBaseProvider>
-      <Routes />
-    </NativeBaseProvider>
+    <BudgetProvider>
+      <NativeBaseProvider>
+        <Routes />
+      </NativeBaseProvider>
+    </BudgetProvider>
   )
 }
