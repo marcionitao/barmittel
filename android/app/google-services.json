@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "802905108935-uuhccsqb49pes1jnuhkb6uk761roaqum.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.barmittel",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
           "client_id": "802905108935-nfe7b8741dqf2ldehlmn31nqgpsp3j03.apps.googleusercontent.com",
           "client_type": 3
         }

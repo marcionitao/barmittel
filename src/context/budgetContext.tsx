@@ -1,6 +1,6 @@
+import firestore from '@react-native-firebase/firestore'
 import moment from 'moment'
 import { createContext, useEffect, useState } from 'react'
-import firestore from '@react-native-firebase/firestore'
 import { Budget, BudgetContextType } from '../@types/navigation'
 
 // create context
@@ -16,32 +16,50 @@ export const BudgetProvider = ({ children }) => {
   // state
   const [movements, setMovements] = useState<Budget[]>([])
 
-  // get current date using moment.js
   const currentDate = moment()
 
-  //get first month from current year using moment.js
-  const firstMonth = moment().year(currentDate.year()).month(0)
+  const firstDayCurrentMonth = moment({
+    year: currentDate.year(),
+    month: currentDate.month(),
+    date: 1,
+  }).toDate()
 
-  //get current month from current year using moment.js
-  const currentMonth = moment().year(currentDate.year()).month(currentDate.month())
+  const firstDayNextMonth = moment({
+    year: currentDate.year(),
+    month: currentDate.month() + 1,
+    date: 1,
+  }).toDate()
+
+  // const date = new Date()
+  // const x = new Date(date.getFullYear(), date.getMonth(), 1) // 1º dia do mes atual
+  // const y = new Date(date.getFullYear(), date.getMonth() + 1, 1) // 1º dia do mes seguinte
 
   useEffect(() => {
     // get all movements from firestore
-    const db = firestore()
-      .collection('orcamento')
-      .orderBy('data', 'desc')
-      .where('data', '>=', firstMonth)
-      .where('data', '<=', currentMonth)
-      .onSnapshot((querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Budget[]
+    ;(async () => {
+      const db = await firestore()
+        .collection('orcamento')
+        .orderBy('data', 'desc')
+        .where('data', '>=', firstDayCurrentMonth)
+        .where('data', '<', firstDayNextMonth)
+        .onSnapshot(
+          (querySnapshot) => {
+            const myData = querySnapshot.docs.map((doc) => {
+              return {
+                id: doc.id,
+                ...doc.data(),
+              }
+            }) as Budget[]
 
-        setMovements(data)
-      })
-
-    return () => db()
+            //console.warn(myData)
+            setMovements(myData)
+          },
+          (error) => {
+            console.error(error)
+          },
+        )
+      return () => db()
+    })()
   }, [])
 
   // add movement
@@ -79,3 +97,4 @@ export const BudgetProvider = ({ children }) => {
     </BudgetContext.Provider>
   )
 }
+export default BudgetContext

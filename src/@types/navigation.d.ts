@@ -3,8 +3,8 @@ export type Budget = {
   acao: string
   categoria: string
   descricao: string
-  moviimentos: number
-  data: data
+  movimentos: number
+  data: Date
 }
 
 export type BudgetContextType = {
