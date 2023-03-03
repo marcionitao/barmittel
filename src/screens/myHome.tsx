@@ -1,6 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import moment from 'moment'
 import { Avatar, Badge, Box, HStack, Icon, Pressable, Spacer, Text, VStack } from 'native-base'
+import numeral from 'numeral'
 import { useContext } from 'react'
 import { Alert } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
@@ -58,11 +60,15 @@ const MyHome = ({ navigation }: MovimentosProps) => {
                 <Text color='coolGray.800' bold>
                   {item.categoria}
                 </Text>
-                <Text color='coolGray.600'>{item.data}</Text>
+                <Text color='coolGray.600'>{moment(item.data).format('DD/MMMM/YYYY')}</Text>
               </VStack>
               <Spacer />
-              <Text fontSize='xs' color='coolGray.800' alignSelf='flex-start'>
-                {item.movimentos}
+              <Text
+                fontSize='xs'
+                color={item.acao === 'Despesa' ? 'red.500' : 'green.500'}
+                alignSelf='flex-start'
+              >
+                {numeral(item.movimentos).format('0,0[.]00 €')}
               </Text>
             </HStack>
           </Box>
