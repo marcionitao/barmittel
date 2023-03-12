@@ -6,6 +6,9 @@ import { Budget, BudgetContextType } from '../@types/navigation'
 // create context
 export const BudgetContext = createContext<BudgetContextType>({
   movements: [],
+  saldo: 0,
+  despesa: 0,
+  receita: 0,
   addMovement: () => {},
   removeMovement: () => {},
   updateMovement: () => {},
@@ -15,6 +18,9 @@ export const BudgetContext = createContext<BudgetContextType>({
 export const BudgetProvider = ({ children }) => {
   // state
   const [movements, setMovements] = useState<Budget[]>([])
+  const [saldo, setSaldo] = useState(0)
+  const [receita, setReceita] = useState(0)
+  const [despesa, setDespesa] = useState(0)
 
   const currentDate = moment()
 
@@ -35,15 +41,14 @@ export const BudgetProvider = ({ children }) => {
   // const y = new Date(date.getFullYear(), date.getMonth() + 1, 1) // 1º dia do mes seguinte
 
   useEffect(() => {
-    // get all movements from firestore
-    ;(async () => {
-      const db = await firestore()
-        .collection('orcamento')
-        .orderBy('data', 'desc')
-        .where('data', '>=', firstDayCurrentMonth)
-        .where('data', '<', firstDayNextMonth)
-        .onSnapshot(
-          (querySnapshot) => {
+    const fetchData = async () => {
+      try {
+        const db = await firestore()
+          .collection('orcamento')
+          .orderBy('data', 'desc')
+          .where('data', '>=', firstDayCurrentMonth)
+          .where('data', '<', firstDayNextMonth)
+          .onSnapshot((querySnapshot) => {
             const myData = querySnapshot.docs.map((doc) => {
               return {
                 id: doc.id,
@@ -53,17 +58,55 @@ export const BudgetProvider = ({ children }) => {
 
             //console.warn(myData)
             setMovements(myData)
-          },
-          (error) => {
-            console.error(error)
-          },
-        )
-      return () => db()
-    })()
+          })
+        return () => db()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    async function getSoma() {
+      try {
+        const querySnapshot = await firestore()
+          .collection('orcamento')
+          .where('data', '>=', firstDayCurrentMonth)
+          .where('data', '<', firstDayNextMonth)
+          .get()
+
+        let despesa = 0
+        let receita = 0
+
+        querySnapshot.forEach((doc) => {
+          if (doc.data().acao === 'Despesa') {
+            despesa += doc.data().movimentos
+          } else if (doc.data().acao === 'Receita') {
+            receita += doc.data().movimentos
+          }
+        })
+
+        const diff = receita - despesa
+        setReceita(receita)
+        setDespesa(despesa)
+        setSaldo(diff)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    getSoma()
   }, [])
 
   // add movement
   const addMovement = (movement: Budget) => {
+    // const timestamp = firebase.firestore.Timestamp.fromDate(inputDate);
+    // firebase.firestore().collection('carteira').add({
+    //   // ...
+    //   data: timestamp,
+    // })
+    //   .then(() => console.log('Data salva com sucesso!'))
+    //   .catch((error) => console.error(error));
     setMovements([...movements, movement])
   }
 
@@ -88,6 +131,9 @@ export const BudgetProvider = ({ children }) => {
     <BudgetContext.Provider
       value={{
         movements,
+        saldo,
+        receita,
+        despesa,
         addMovement,
         removeMovement,
         updateMovement,

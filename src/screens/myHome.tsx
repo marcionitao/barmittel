@@ -1,167 +1,111 @@
-import { MaterialIcons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-import moment from 'moment'
-import { Avatar, Badge, Box, HStack, Icon, Pressable, Spacer, Text, VStack } from 'native-base'
-import numeral from 'numeral'
+import { Text, View } from 'react-native'
+// import { SafeAreaView } from 'react-native-safe-area-context'
+import MovementList from '../components/MovimentList'
+import NewFAB from '../components/NewFAB'
+
+import { Card } from '@rneui/themed'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useContext } from 'react'
-import { Alert } from 'react-native'
-import { SwipeListView } from 'react-native-swipe-list-view'
-import { Budget } from '../@types/navigation'
-
-import MyFAB from '../components/myFAB'
-import MySelector from '../components/mySelector'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import budgetContext from '../context/budgetContext'
-import colorGenerator from '../utils/colorGenerator'
 
-interface MovimentosProps {
-  navigation: any
-}
+import numeral from 'numeral'
 
-const MyHome = ({ navigation }: MovimentosProps) => {
-  navigation = useNavigation()
-
-  const { movements } = useContext(budgetContext)
-
-  const confirmDelete = (index, item: Budget) => {
-    return Alert.alert('Delete', `Are you sure you want to delete this Movement?`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'OK',
-        onPress: () => console.warn('Movimento Deletado!!', item),
-      },
-    ])
-  }
-
-  const getMovimentItem = ({ item, index }) => {
-    return (
-      <Box mt={1}>
-        <Pressable
-          onPress={() => {
-            navigation.navigate('myForm', item)
-          }}
-          _light={{
-            bg: 'white',
-          }}
-        >
-          <Box pl='4' pr='5' py='3' borderTopWidth={0.3} borderColor='grey.50'>
-            <HStack space={[4, 5]} justifyContent='space-between'>
-              <Avatar
-                bg={colorGenerator()}
-                size='48px'
-                _text={{
-                  fontWeight: 600,
-                  color: 'text.50',
-                  fontSize: 20,
-                }}
-              >
-                {item.categoria[0]}
-              </Avatar>
-              <VStack>
-                <Text color='coolGray.800' bold>
-                  {item.categoria}
-                </Text>
-                <Text color='coolGray.600'>{moment(item.data).format('DD/MMMM/YYYY')}</Text>
-              </VStack>
-              <Spacer />
-              <Text
-                fontSize='xs'
-                color={item.acao === 'Despesa' ? 'red.500' : 'green.500'}
-                alignSelf='flex-start'
-              >
-                {numeral(item.movimentos).format('0,0[.]00 €')}
-              </Text>
-            </HStack>
-          </Box>
-        </Pressable>
-      </Box>
-    )
-  }
-  //
-  const renderHiddenItem = ({ item }, rowMap) => (
-    <HStack flex='1' pl='2' mt={1} borderTopWidth={0.3} borderColor='grey.500'>
-      <Pressable
-        w='70'
-        bg='red.500'
-        justifyContent='center'
-        onPress={() => {
-          confirmDelete(rowMap, item.id)
-        }}
-        _pressed={{
-          opacity: 0.5,
-        }}
-      >
-        <VStack alignItems='center' space={2}>
-          <Icon as={<MaterialIcons name='delete' />} color='white' size='md' />
-          <Text color='white' fontSize='xs' fontWeight='medium'>
-            Delete
-          </Text>
-        </VStack>
-      </Pressable>
-    </HStack>
-  )
+const MyHome = () => {
+  const { saldo, despesa, receita } = useContext(budgetContext)
 
   return (
-    <Box p='2' flex={1} bgColor={'#FFF'}>
-      {/* this is collumn */}
-      <VStack bgColor={'#FFF'}>
-        {/* this is rows */}
-        <HStack>
-          <Badge
-            mt={1}
-            p={19}
-            w='1/2'
-            colorScheme='success'
-            _text={{
-              fontSize: 15,
-            }}
-          >
-            2456,86€
-          </Badge>
-          <Badge
-            mt={2}
-            p={19}
-            w='1/2'
-            colorScheme='danger'
-            _text={{
-              fontSize: 15,
-            }}
-          >
-            785,25€
-          </Badge>
-        </HStack>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+      <LinearGradient
+        // Background Linear Gradient
+        colors={['#F8B600', '#fff']}
+      >
+        <Card
+          containerStyle={{
+            // marginTop: '10%',
+            borderTopStartRadius: 10,
+            borderTopEndRadius: 10,
+            height: '25%',
+          }}
+        >
+          <Card.Title>Saldo Disponivel</Card.Title>
+          <Text style={{ textAlign: 'center', fontSize: 45, fontWeight: 'bold' }}>
+            {numeral(saldo).format('0,0.00')}€
+          </Text>
 
-        <Box alignItems='center'>
-          <Badge
-            mt={2}
-            p={17}
-            w='100%'
-            backgroundColor={'#FFF'}
-            colorScheme='success'
-            variant={'outline'}
-            _text={{
-              fontWeight: 'bold',
-              fontSize: 30,
+          <Card.Divider />
+          <View
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
             }}
           >
-            1671,61€
-          </Badge>
-        </Box>
-        {/* my selector of months */}
-        <MySelector label={'JANEIRO'} value={'1'} />
+            <View
+              style={{
+                width: '50%',
+                padding: 5,
+              }}
+            >
+              <Card.Title>Receitas</Card.Title>
+              <View
+                style={{
+                  width: '100%',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Icon name='arrow-up-circle' size={32} color='green' />
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: 20,
+                    fontWeight: 'normal',
+                    color: 'green',
+                  }}
+                >
+                  {numeral(receita).format('0,0.00')}€
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                width: '50%',
+                padding: 5,
+              }}
+            >
+              <Card.Title>Despesas</Card.Title>
+              <View
+                style={{
+                  width: '100%',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Icon name='arrow-down-circle' size={32} color='red' />
+                <Text
+                  style={{ textAlign: 'center', fontSize: 20, fontWeight: 'normal', color: 'red' }}
+                >
+                  {numeral(despesa).format('0,0.00')}€
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Card>
 
-        <SwipeListView
-          data={movements}
-          renderItem={getMovimentItem}
-          renderHiddenItem={renderHiddenItem}
-          leftOpenValue={80}
-          previewRowKey={'0'}
-          previewOpenValue={-40}
-          previewOpenDelay={3000}
-        />
-      </VStack>
-      {/* my FAB button */}
-      <MyFAB />
-    </Box>
+        <View style={{ height: '80%' }}>
+          <MovementList />
+        </View>
+      </LinearGradient>
+      <NewFAB />
+    </View>
   )
 }
 
