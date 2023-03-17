@@ -36,10 +36,6 @@ export const BudgetProvider = ({ children }) => {
     date: 1,
   }).toDate()
 
-  // const date = new Date()
-  // const x = new Date(date.getFullYear(), date.getMonth(), 1) // 1º dia do mes atual
-  // const y = new Date(date.getFullYear(), date.getMonth() + 1, 1) // 1º dia do mes seguinte
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -61,10 +57,12 @@ export const BudgetProvider = ({ children }) => {
           })
         return () => db()
       } catch (error) {
-        console.error(error)
+        console.log('Erro lista...', error)
       }
     }
-    fetchData()
+    fetchData().catch((error) => {
+      console.log('Erro fetchData:', error)
+    })
   }, [])
 
   useEffect(() => {
@@ -92,10 +90,12 @@ export const BudgetProvider = ({ children }) => {
         setDespesa(despesa)
         setSaldo(diff)
       } catch (error) {
-        console.error(error)
+        console.log('Erro saldos etc....', error)
       }
     }
-    getSoma()
+    getSoma().catch((error) => {
+      console.log('Erro getSoma:', error)
+    })
   }, [])
 
   // add movement
@@ -107,24 +107,46 @@ export const BudgetProvider = ({ children }) => {
     // })
     //   .then(() => console.log('Data salva com sucesso!'))
     //   .catch((error) => console.error(error));
-    setMovements([...movements, movement])
+    try {
+      setMovements([...movements, movement])
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   // remove movement
   const removeMovement = (id: string) => {
-    setMovements(movements.filter((movement) => movement.id !== id))
+    try {
+      setMovements(movements.filter((movement) => movement.id !== id))
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   // update movement
-  const updateMovement = (id: string) => {
-    setMovements(
-      movements.map((movement) => {
-        if (movement.id === id) {
-          return movement
-        }
-        return movement
-      }),
-    )
+  const updateMovement = (documentId: string, formData: Budget) => {
+    console.warn('id: ', documentId, ' - ', 'Dados do Form: ', formData)
+    // const movementRef = firestore().collection('orcamento').doc(documentId)
+
+    // movementRef
+    //   .update(formData)
+    //   .then(() => {
+    //     console.log('Document updated successfully')
+    //     setMovements(
+    //       movements.map((movement) => {
+    //         if (movement.id === documentId) {
+    //           return {
+    //             ...movement,
+    //             ...formData,
+    //           }
+    //         }
+    //         return movement
+    //       }),
+    //     )
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error updating document: ', error)
+    //   })
   }
 
   return (

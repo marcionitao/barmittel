@@ -15,7 +15,7 @@ export type BudgetContextType = {
   //setMovement: (movements: Budget[]) => void
   addMovement: (newMovement: Budget) => void
   removeMovement: (movementId: string) => void
-  updateMovement: (movementId: string) => void
+  updateMovement: (movementId: string, formData: Budget) => void
 }
 
 export declare global {
