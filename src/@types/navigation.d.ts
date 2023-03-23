@@ -12,6 +12,7 @@ export type BudgetContextType = {
   saldo: number
   receita: number
   despesa: number
+  mesAtual: Date
   //setMovement: (movements: Budget[]) => void
   addMovement: (newMovement: Budget) => void
   removeMovement: (movementId: string) => void

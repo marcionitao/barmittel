@@ -8,11 +8,8 @@ const NewFAB = () => {
 
   const navigation = useNavigation()
 
-  const despesa = () => {
-    navigation.navigate('myForm', { acao: 'Despesa' })
-  }
-  const receita = () => {
-    navigation.navigate('myForm', { acao: 'Receita' })
+  const acao = (aAcao: string) => {
+    navigation.navigate('myForm', { acao: aAcao })
   }
 
   return (
@@ -31,7 +28,7 @@ const NewFAB = () => {
         icon={{ name: 'arrow-upward', color: '#fff' }}
         color='green'
         onPress={() => {
-          receita()
+          acao('Receita')
           setOpen(!open)
         }}
       />
@@ -40,7 +37,7 @@ const NewFAB = () => {
         icon={{ name: 'arrow-downward', color: '#fff' }}
         color='red'
         onPress={() => {
-          despesa()
+          acao('Despesa')
           setOpen(!open)
         }}
       />

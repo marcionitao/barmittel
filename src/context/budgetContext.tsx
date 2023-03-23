@@ -9,6 +9,7 @@ export const BudgetContext = createContext<BudgetContextType>({
   saldo: 0,
   despesa: 0,
   receita: 0,
+  mesAtual: new Date(),
   addMovement: () => {},
   removeMovement: () => {},
   updateMovement: () => {},
@@ -21,6 +22,7 @@ export const BudgetProvider = ({ children }) => {
   const [saldo, setSaldo] = useState(0)
   const [receita, setReceita] = useState(0)
   const [despesa, setDespesa] = useState(0)
+  const [mesAtual, setMesAtual] = useState(new Date())
 
   const currentDate = moment()
 
@@ -52,7 +54,6 @@ export const BudgetProvider = ({ children }) => {
               }
             }) as Budget[]
 
-            //console.warn(myData)
             setMovements(myData)
           })
         return () => db()
@@ -72,33 +73,37 @@ export const BudgetProvider = ({ children }) => {
           .collection('orcamento')
           .where('data', '>=', firstDayCurrentMonth)
           .where('data', '<', firstDayNextMonth)
-          .get()
+          .onSnapshot((querySnapshot) => {
+            let despesa = 0
+            let receita = 0
+            let mesAtual = new Date()
 
-        let despesa = 0
-        let receita = 0
+            querySnapshot.docs.map((doc) => {
+              if (doc.data().acao === 'Despesa') {
+                despesa += doc.data().movimentos
+              } else if (doc.data().acao === 'Receita') {
+                receita += doc.data().movimentos
+              }
+              mesAtual = doc.data().data
+            })
+            const diff = receita - despesa
 
-        querySnapshot.forEach((doc) => {
-          if (doc.data().acao === 'Despesa') {
-            despesa += doc.data().movimentos
-          } else if (doc.data().acao === 'Receita') {
-            receita += doc.data().movimentos
-          }
-        })
-
-        const diff = receita - despesa
-        setReceita(receita)
-        setDespesa(despesa)
-        setSaldo(diff)
+            setReceita(receita)
+            setDespesa(despesa)
+            setSaldo(diff)
+            setMesAtual(mesAtual)
+          })
+        return () => querySnapshot()
       } catch (error) {
         console.log('Erro saldos etc....', error)
       }
     }
     getSoma().catch((error) => {
-      console.log('Erro getSoma:', error)
+      console.log('Erro fetchData:', error)
     })
   }, [])
 
-  // add movement
+  // TODO: add a movement in local and firebase
   const addMovement = (movement: Budget) => {
     // const timestamp = firebase.firestore.Timestamp.fromDate(inputDate);
     // firebase.firestore().collection('carteira').add({
@@ -114,39 +119,33 @@ export const BudgetProvider = ({ children }) => {
     }
   }
 
-  // remove movement
-  const removeMovement = (id: string) => {
-    try {
-      setMovements(movements.filter((movement) => movement.id !== id))
-    } catch (error) {
-      console.error(error)
-    }
+  const removeMovement = (documentId: string) => {
+    firestore().collection('orcamento').doc(documentId).delete()
+    setMovements(movements.filter((movement) => movement.id !== documentId))
   }
 
-  // update movement
   const updateMovement = (documentId: string, formData: Budget) => {
-    console.warn('id: ', documentId, ' - ', 'Dados do Form: ', formData)
-    // const movementRef = firestore().collection('orcamento').doc(documentId)
+    const movementRef = firestore().collection('orcamento').doc(documentId)
 
-    // movementRef
-    //   .update(formData)
-    //   .then(() => {
-    //     console.log('Document updated successfully')
-    //     setMovements(
-    //       movements.map((movement) => {
-    //         if (movement.id === documentId) {
-    //           return {
-    //             ...movement,
-    //             ...formData,
-    //           }
-    //         }
-    //         return movement
-    //       }),
-    //     )
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error updating document: ', error)
-    //   })
+    movementRef
+      .update(formData)
+      .then(() => {
+        console.log('Document updated successfully')
+        setMovements(
+          movements.map((movement) => {
+            if (movement.id === documentId) {
+              return {
+                ...movement,
+                ...formData,
+              }
+            }
+            return movement
+          }),
+        )
+      })
+      .catch((error) => {
+        console.error('Error updating document: ', error)
+      })
   }
 
   return (
@@ -156,6 +155,7 @@ export const BudgetProvider = ({ children }) => {
         saldo,
         receita,
         despesa,
+        mesAtual,
         addMovement,
         removeMovement,
         updateMovement,

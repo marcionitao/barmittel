@@ -9,10 +9,11 @@ import { useContext } from 'react'
 
 import budgetContext from '../context/budgetContext'
 
+import moment from 'moment'
 import numeral from 'numeral'
 
 const MyHome = () => {
-  const { saldo, despesa, receita } = useContext(budgetContext)
+  const { saldo, despesa, receita, mesAtual } = useContext(budgetContext)
 
   return (
     <SafeAreaView>
@@ -27,13 +28,14 @@ const MyHome = () => {
           }}
         >
           <Card.Title>Saldo Disponivel</Card.Title>
-          <Text style={{ textAlign: 'center', fontSize: 35, fontWeight: 'bold' }}>
+          <Text style={{ textAlign: 'center', fontSize: 30, fontWeight: 'bold' }}>
             {numeral(saldo).format('0,0.00')}€
           </Text>
-          <Card.Divider />
+
           <View
             style={{
               width: '100%',
+              marginTop: 5,
               alignItems: 'center',
               flexDirection: 'row',
               flexWrap: 'wrap',
@@ -50,6 +52,7 @@ const MyHome = () => {
                 style={{
                   width: '100%',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   flexDirection: 'row',
                   flexWrap: 'wrap',
                 }}
@@ -87,6 +90,7 @@ const MyHome = () => {
                 style={{
                   width: '100%',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   flexDirection: 'row',
                   flexWrap: 'wrap',
                 }}
@@ -109,9 +113,12 @@ const MyHome = () => {
               </View>
             </View>
           </View>
+          <Text style={{ textAlign: 'center', fontSize: 15, fontWeight: 'bold', marginTop: 5 }}>
+            {moment(mesAtual).format('MMMM/YYYY')}
+          </Text>
         </Card>
 
-        <View style={{ height: '71%' }}>
+        <View style={{ height: '70%' }}>
           <MovementList />
         </View>
       </LinearGradient>

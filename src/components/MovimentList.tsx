@@ -4,7 +4,6 @@ import { Card } from '@rneui/themed'
 import { useContext } from 'react'
 import { Alert, FlatList } from 'react-native'
 
-import { Budget } from '../@types/navigation'
 import budgetContext from '../context/budgetContext'
 
 //import { fakeData } from '../fakeData/data'
@@ -19,14 +18,16 @@ interface MovimentosProps {
 export default function MovementList({ navigation }: MovimentosProps) {
   navigation = useNavigation()
 
-  const { movements } = useContext(budgetContext)
+  const { movements, removeMovement } = useContext(budgetContext)
 
-  const confirmDelete = (item: Budget) => {
+  const confirmDelete = (documentId: string) => {
     return Alert.alert('Delete', `Are you sure you want to delete this Movement?`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'OK',
-        onPress: () => console.warn('Movimento Deletado!!', item),
+        onPress: () => {
+          removeMovement(documentId)
+        },
       },
     ])
   }
@@ -39,7 +40,7 @@ export default function MovementList({ navigation }: MovimentosProps) {
         rightWidth={90}
         bottomDivider
         onPress={() => navigation.navigate('myForm', item)}
-        rightContent={() => (
+        rightContent={(reset) => (
           <Button
             containerStyle={{
               flex: 1,
@@ -48,7 +49,10 @@ export default function MovementList({ navigation }: MovimentosProps) {
             }}
             type='clear'
             icon={{ name: 'delete-outline', color: 'white' }}
-            onPress={() => confirmDelete(item)}
+            onPress={() => {
+              confirmDelete(item.id)
+              reset()
+            }}
           />
         )}
       >

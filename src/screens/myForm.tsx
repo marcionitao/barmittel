@@ -3,16 +3,15 @@ import { Picker } from '@react-native-picker/picker'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Button, Card } from '@rneui/themed'
 import { LinearGradient } from 'expo-linear-gradient'
-import numeral from 'numeral'
 import { useContext, useState } from 'react'
-import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
-import { DatePickerInput, pt, registerTranslation } from 'react-native-paper-dates'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
+import CurrencyInput from 'react-native-currency-input'
+import { DatePickerInput, en, registerTranslation } from 'react-native-paper-dates'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import budgetContext from '../context/budgetContext'
 import { categorias } from '../utils/categoryList'
 
-// registerTranslation('EN', en)
-registerTranslation('PT', pt)
-
+registerTranslation('EN', en)
 interface MovimentosProps {
   route: any
   navigation: any
@@ -28,9 +27,10 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
   const [inputDate, setInputDate] = useState(new Date())
   const [selectedAcao, setSelectedAcao] = useState(route.params.acao)
   const [selectedCategoria, setSelectedCategoria] = useState('Selecione a Categoria')
+  const [value, setValue] = useState(0)
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
       }}
@@ -46,26 +46,10 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
             borderColor: '#006e61',
           }}
         >
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Image
-              style={{
-                height: 80,
-                width: 80,
-                resizeMode: 'contain',
-              }}
-              source={require('../../images/logo-input.png')}
-            />
-          </View>
-
           <View style={styles.form}>
-            <Text style={{ marginTop: 10, marginBottom: 5 }}>Data</Text>
+            <Text style={{ marginBottom: 2 }}>Data</Text>
             <DatePickerInput
-              locale='PT'
+              locale='EN'
               value={carteira.id !== undefined ? carteira.data.toDate() : inputDate}
               style={{ backgroundColor: '#f6f6f6' }}
               onChange={(value) => {
@@ -79,7 +63,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
               inputMode='start'
             />
 
-            <Text style={{ marginTop: 10, marginBottom: 5 }}>Ação</Text>
+            <Text style={{ marginTop: 5, marginBottom: 2 }}>Ação</Text>
             <Picker
               selectedValue={carteira.id !== undefined ? carteira.acao : selectedAcao}
               onValueChange={(acao, itemIndex) => {
@@ -91,15 +75,9 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
             >
               <Picker.Item label='Receita' value='Receita' color='green' style={{ fontSize: 16 }} />
               <Picker.Item label='Despesa' value='Despesa' color='red' style={{ fontSize: 16 }} />
-              {/* <Picker.Item
-                label='Selecione a Ação'
-                value='Selecione a Ação'
-                enabled={false}
-                color='grey'
-              /> */}
             </Picker>
 
-            <Text style={{ marginTop: 10, marginBottom: 5 }}>Categoria</Text>
+            <Text style={{ marginTop: 5, marginBottom: 2 }}>Categoria</Text>
             <Picker
               selectedValue={carteira.id !== undefined ? carteira.categoria : selectedCategoria}
               onValueChange={(categoria, itemIndex) => {
@@ -125,7 +103,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
               />
             </Picker>
 
-            <Text style={{ marginTop: 10, marginBottom: 5 }}>Descrição</Text>
+            <Text style={{ marginTop: 5, marginBottom: 2 }}>Descrição</Text>
             <TextInput
               style={styles.input}
               value={carteira.descricao}
@@ -133,15 +111,18 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
               placeholder='Descrição do Movimento'
             />
 
-            <Text style={{ marginTop: 0, marginBottom: 5 }}>Movimento</Text>
-            <TextInput
+            <Text style={{ marginTop: 0, marginBottom: 2 }}>Movimento</Text>
+            <CurrencyInput
+              value={carteira.id !== undefined ? carteira.movimentos : value}
+              onChangeValue={(movimentos) => {
+                setValue
+                setCarteira({ ...carteira, movimentos })
+              }}
               style={styles.input}
-              keyboardType='numeric'
-              value={numeral(carteira.movimentos).format('0,0.00')}
-              onChangeText={(movimentos: string) =>
-                setCarteira({ ...carteira, movimentos: parseFloat(movimentos) })
-              }
-              placeholder='0.00€'
+              suffix='€'
+              separator='.'
+              precision={2}
+              minValue={0}
             />
             <View
               style={{
@@ -165,7 +146,6 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
                   style={{ marginTop: 25, marginBottom: 15 }}
                   color='#f6f6f6'
                   onPress={() => {
-                    //carteira.id !== undefined ? updateMovement(carteira.id, carteira) : addMovement
                     navigation.goBack()
                   }}
                 />
@@ -190,7 +170,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
           </View>
         </Card>
       </LinearGradient>
-    </View>
+    </SafeAreaView>
   )
 }
 // define styles for input
@@ -203,7 +183,8 @@ const styles = StyleSheet.create({
     height: 45,
     padding: 10,
     fontSize: 16,
-    borderColor: 'gray',
+    fontWeight: 'bold',
+    borderColor: '#006e61',
     backgroundColor: '#f6f6f6',
     borderWidth: 0.5,
     marginBottom: 15,
