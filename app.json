@@ -4,9 +4,29 @@
     "slug": "barmittel",
     "version": "1.0.0",
     "assetBundlePatterns": ["**/*"],
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f8b600"
+    },
+    "ios": {
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#f8b600"
+      },
+      "suportsTablet": true
+    },
     "android": {
       "package": "com.barmittel",
-      "googleServicesFile": "./android/app/google-services.json"
+      "googleServicesFile": "./android/app/google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
     },
     "plugins": ["@react-native-firebase/app"]
   }

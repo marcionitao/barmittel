@@ -118,7 +118,10 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
                 setValue
                 setCarteira({ ...carteira, movimentos })
               }}
-              style={styles.input}
+              style={[
+                styles.input,
+                { color: carteira.acao === 'Receita' ? 'green' : 'red', textAlign: 'right' },
+              ]}
               suffix='€'
               separator='.'
               precision={2}
