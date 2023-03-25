@@ -24,6 +24,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
   const { addMovement, updateMovement } = useContext(budgetContext)
 
   const [carteira, setCarteira] = useState(route.params ? route.params : {})
+
   const [inputDate, setInputDate] = useState(new Date())
   const [selectedAcao, setSelectedAcao] = useState(route.params.acao)
   const [selectedCategoria, setSelectedCategoria] = useState('Selecione a Categoria')
@@ -42,7 +43,6 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
             borderTopEndRadius: 10,
             borderBottomStartRadius: 10,
             borderBottomEndRadius: 10,
-            height: 'auto',
             borderColor: '#006e61',
           }}
         >
@@ -57,13 +57,35 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
                 //console.warn(value.toLocaleDateString())
                 setCarteira({
                   ...carteira,
+                  //data: value,
                   data: firebase.firestore.Timestamp.fromDate(value),
                 })
               }}
               inputMode='start'
             />
 
-            <Text style={{ marginTop: 5, marginBottom: 2 }}>Ação</Text>
+            <Text style={{ marginTop: 5, marginBottom: 2 }}>Movimento</Text>
+            <CurrencyInput
+              value={carteira.id !== undefined ? carteira.movimentos : value}
+              onChangeValue={(movimentos) => {
+                setValue(movimentos)
+                setCarteira({ ...carteira, movimentos })
+              }}
+              style={[
+                styles.inputCurrency,
+                { color: carteira.acao === 'Receita' ? 'green' : 'red', textAlign: 'center' },
+              ]}
+              suffix='€'
+              autoFocus={carteira.id !== undefined ? false : true}
+              separator='.'
+              precision={2}
+              minValue={0}
+              // onChangeText={(movimentos) => {
+              //   console.log(movimentos)
+              // }}
+            />
+
+            <Text style={{ marginTop: 0, marginBottom: 2 }}>Ação</Text>
             <Picker
               selectedValue={carteira.id !== undefined ? carteira.acao : selectedAcao}
               onValueChange={(acao, itemIndex) => {
@@ -111,22 +133,6 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
               placeholder='Descrição do Movimento'
             />
 
-            <Text style={{ marginTop: 0, marginBottom: 2 }}>Movimento</Text>
-            <CurrencyInput
-              value={carteira.id !== undefined ? carteira.movimentos : value}
-              onChangeValue={(movimentos) => {
-                setValue
-                setCarteira({ ...carteira, movimentos })
-              }}
-              style={[
-                styles.input,
-                { color: carteira.acao === 'Receita' ? 'green' : 'red', textAlign: 'right' },
-              ]}
-              suffix='€'
-              separator='.'
-              precision={2}
-              minValue={0}
-            />
             <View
               style={{
                 width: '100%',
@@ -164,7 +170,9 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
                   style={{ marginTop: 25, marginBottom: 15 }}
                   color='#006e61'
                   onPress={() => {
-                    carteira.id !== undefined ? updateMovement(carteira.id, carteira) : addMovement
+                    carteira.id !== undefined
+                      ? updateMovement(carteira.id, carteira)
+                      : addMovement(carteira)
                     navigation.goBack()
                   }}
                 />
@@ -179,8 +187,8 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
 // define styles for input
 const styles = StyleSheet.create({
   form: {
-    padding: 4,
-    marginTop: 20,
+    padding: 3,
+    marginTop: 10,
   },
   input: {
     height: 45,
@@ -191,6 +199,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#f6f6f6',
     borderWidth: 0.5,
     marginBottom: 15,
+  },
+  inputCurrency: {
+    height: 50,
+    padding: 10,
+    fontSize: 28,
+    fontWeight: 'bold',
+    borderColor: '#006e61',
+    backgroundColor: '#f6f6f6',
+    borderWidth: 0.5,
+    marginBottom: 5,
   },
 })
 

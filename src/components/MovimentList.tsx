@@ -35,6 +35,7 @@ export default function MovementList({ navigation }: MovimentosProps) {
   const getItems = ({ item }) => {
     return (
       <ListItem.Swipeable
+        key={item.id}
         animation={{ type: 'timing', duration: 500 }}
         leftWidth={80}
         rightWidth={90}
@@ -87,11 +88,7 @@ export default function MovementList({ navigation }: MovimentosProps) {
         borderTopEndRadius: 10,
       }}
     >
-      <FlatList
-        data={movements}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={getItems}
-      />
+      <FlatList data={movements} keyExtractor={(item) => item.id} renderItem={getItems} />
     </Card>
   )
 }

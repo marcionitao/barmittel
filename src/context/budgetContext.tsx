@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore'
+import firestore, { firebase } from '@react-native-firebase/firestore'
 import moment from 'moment'
 import { createContext, useEffect, useState } from 'react'
 import { Budget, BudgetContextType } from '../@types/navigation'
@@ -103,49 +103,71 @@ export const BudgetProvider = ({ children }) => {
     })
   }, [])
 
-  // TODO: add a movement in local and firebase
-  const addMovement = (movement: Budget) => {
-    // const timestamp = firebase.firestore.Timestamp.fromDate(inputDate);
-    // firebase.firestore().collection('carteira').add({
-    //   // ...
-    //   data: timestamp,
-    // })
-    //   .then(() => console.log('Data salva com sucesso!'))
-    //   .catch((error) => console.error(error));
+  const addMovement = async (movement: Budget) => {
+    const timestamp = firebase.firestore.Timestamp.now()
+    const dateCondition = movement.data === undefined ? timestamp : movement.data
+
+    const newMovement = {
+      id: '',
+      acao: movement.acao,
+      categoria: movement.categoria,
+      descricao: movement.descricao,
+      movimentos: movement.movimentos,
+      data: dateCondition,
+    } as Budget
+
     try {
-      setMovements([...movements, movement])
+      await firebase
+        .firestore()
+        .collection('orcamento')
+        .add({
+          acao: movement.acao,
+          categoria: movement.categoria,
+          descricao: movement.descricao,
+          movimentos: movement.movimentos,
+          data: dateCondition,
+        })
+        .then(() => console.log('Dados salvos com sucesso!'))
+        .catch((error) => console.error(error))
+      setMovements([newMovement, ...movements])
     } catch (error) {
       console.error(error)
     }
   }
 
   const removeMovement = (documentId: string) => {
-    firestore().collection('orcamento').doc(documentId).delete()
-    setMovements(movements.filter((movement) => movement.id !== documentId))
+    firestore()
+      .collection('orcamento')
+      .doc(documentId)
+      .delete()
+      .then(() => {
+        setMovements(movements.filter((movement) => movement.id !== documentId))
+      })
   }
 
   const updateMovement = (documentId: string, formData: Budget) => {
-    const movementRef = firestore().collection('orcamento').doc(documentId)
-
-    movementRef
+    firestore()
+      .collection('orcamento')
+      .doc(documentId)
       .update(formData)
       .then(() => {
         console.log('Document updated successfully')
-        setMovements(
-          movements.map((movement) => {
-            if (movement.id === documentId) {
-              return {
-                ...movement,
-                ...formData,
-              }
-            }
-            return movement
-          }),
-        )
       })
       .catch((error) => {
         console.error('Error updating document: ', error)
       })
+
+    setMovements(
+      movements.map((movement) => {
+        if (movement.id === documentId) {
+          return {
+            ...movement,
+            ...formData,
+          }
+        }
+        return movement
+      }),
+    )
   }
 
   return (

@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import MovementList from '../components/MovimentList'
 import NewFAB from '../components/NewFAB'
 
-import { Card } from '@rneui/themed'
+import { Card, Icon } from '@rneui/themed'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useContext } from 'react'
 
@@ -64,7 +64,7 @@ const MyHome = () => {
                     marginRight: 5,
                     resizeMode: 'contain',
                   }}
-                  source={require('../../images/up.png')}
+                  source={require('../../assets/images/up.png')}
                 />
 
                 <Text
@@ -102,7 +102,7 @@ const MyHome = () => {
                     resizeMode: 'contain',
                     marginRight: 5,
                   }}
-                  source={require('../../images/down.png')}
+                  source={require('../../assets/images/down.png')}
                 />
 
                 <Text
@@ -113,12 +113,63 @@ const MyHome = () => {
               </View>
             </View>
           </View>
-          <Text style={{ textAlign: 'center', fontSize: 15, fontWeight: 'bold', marginTop: 5 }}>
-            {moment(mesAtual).format('MMMM/YYYY')}
-          </Text>
+          <View
+            style={{
+              width: '100%',
+              marginTop: 5,
+              alignItems: 'center',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
+            <View
+              style={{
+                width: '10%',
+                padding: 5,
+                alignItems: 'flex-start',
+                alignContent: 'flex-end',
+              }}
+            >
+              <Icon
+                raised
+                name='skip-previous'
+                type='MaterialCommunityIcons'
+                color='gray'
+                size={32}
+                onPress={() => console.log('Mes anterior!!')}
+              />
+            </View>
+            <View
+              style={{
+                width: '80%',
+                padding: 5,
+                alignContent: 'center',
+              }}
+            >
+              <Text style={{ textAlign: 'center', fontSize: 15, fontWeight: 'bold' }}>
+                {moment(mesAtual).format('MMMM/YYYY')}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: '10%',
+                padding: 5,
+                alignItems: 'flex-end',
+                alignContent: 'flex-end',
+              }}
+            >
+              <Icon
+                name='skip-next'
+                type='MaterialCommunityIcons'
+                color='gray'
+                size={32}
+                onPress={() => console.log('Mes seguinte!!')}
+              />
+            </View>
+          </View>
         </Card>
 
-        <View style={{ height: '70%' }}>
+        <View style={{ height: '68%' }}>
           <MovementList />
         </View>
       </LinearGradient>
