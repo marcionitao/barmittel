@@ -12,11 +12,12 @@ export type BudgetContextType = {
   saldo: number
   receita: number
   despesa: number
-  mesAtual: Date
-  //setMovement: (movements: Budget[]) => void
+  currentMonth: Date
   addMovement: (newMovement: Budget) => void
   removeMovement: (movementId: string) => void
   updateMovement: (movementId: string, formData: Budget) => void
+  handlePreviousMonth: () => void
+  handleNextMonth: () => void
 }
 
 export declare global {

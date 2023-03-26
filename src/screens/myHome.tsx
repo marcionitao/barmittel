@@ -1,4 +1,4 @@
-import { Image, Text, View } from 'react-native'
+import { Alert, Image, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MovementList from '../components/MovimentList'
 import NewFAB from '../components/NewFAB'
@@ -13,7 +13,19 @@ import moment from 'moment'
 import numeral from 'numeral'
 
 const MyHome = () => {
-  const { saldo, despesa, receita, mesAtual } = useContext(budgetContext)
+  const { saldo, despesa, receita, currentMonth, handlePreviousMonth, handleNextMonth } =
+    useContext(budgetContext)
+
+  const today = new Date(Date.now())
+  const todayMes = today.getMonth() + 1
+
+  const mesApp = moment(currentMonth).format('M')
+
+  const avisoMes = () => {
+    return Alert.alert('Sorry!', "There aren't datas from next month!", [
+      { text: 'Cancel', style: 'cancel' },
+    ])
+  }
 
   return (
     <SafeAreaView>
@@ -125,18 +137,17 @@ const MyHome = () => {
             <View
               style={{
                 width: '10%',
-                padding: 5,
-                alignItems: 'flex-start',
-                alignContent: 'flex-end',
+                padding: 2,
+                //alignItems: 'flex-start',
+                alignContent: 'flex-start',
               }}
             >
               <Icon
-                raised
                 name='skip-previous'
                 type='MaterialCommunityIcons'
                 color='gray'
                 size={32}
-                onPress={() => console.log('Mes anterior!!')}
+                onPress={() => handlePreviousMonth()}
               />
             </View>
             <View
@@ -147,14 +158,13 @@ const MyHome = () => {
               }}
             >
               <Text style={{ textAlign: 'center', fontSize: 15, fontWeight: 'bold' }}>
-                {moment(mesAtual).format('MMMM/YYYY')}
+                {moment(currentMonth).format('MMMM/YYYY')}
               </Text>
             </View>
             <View
               style={{
                 width: '10%',
-                padding: 5,
-                alignItems: 'flex-end',
+                padding: 2,
                 alignContent: 'flex-end',
               }}
             >
@@ -163,7 +173,9 @@ const MyHome = () => {
                 type='MaterialCommunityIcons'
                 color='gray'
                 size={32}
-                onPress={() => console.log('Mes seguinte!!')}
+                onPress={() => {
+                  todayMes <= parseInt(mesApp) ? avisoMes() : handleNextMonth()
+                }}
               />
             </View>
           </View>

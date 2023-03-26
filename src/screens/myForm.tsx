@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   inputCurrency: {
-    height: 50,
+    height: 55,
     padding: 10,
     fontSize: 28,
     fontWeight: 'bold',
