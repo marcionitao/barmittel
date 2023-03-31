@@ -18,6 +18,7 @@ export type BudgetContextType = {
   updateMovement: (movementId: string, formData: Budget) => void
   handlePreviousMonth: () => void
   handleNextMonth: () => void
+  handleCurrentMonth: () => void
 }
 
 export declare global {

@@ -14,6 +14,7 @@ export const BudgetContext = createContext<BudgetContextType>({
   updateMovement: () => {},
   handlePreviousMonth: () => {},
   handleNextMonth: () => {},
+  handleCurrentMonth: () => {},
 })
 
 // create provider
@@ -29,14 +30,19 @@ export const BudgetProvider = ({ children }) => {
     const prevMonth = new Date(currentMonth)
     prevMonth.setMonth(prevMonth.getMonth() - 1)
     setCurrentMonth(prevMonth)
-    console.log(prevMonth)
+  }
+
+  const handleCurrentMonth = () => {
+    const currMonth = new Date()
+    currMonth.setMonth(currMonth.getMonth())
+    setCurrentMonth(currMonth)
+    console.log(currMonth)
   }
 
   const handleNextMonth = () => {
     const nextMonth = new Date(currentMonth)
     nextMonth.setMonth(nextMonth.getMonth() + 1)
     setCurrentMonth(nextMonth)
-    console.log(nextMonth)
   }
 
   useEffect(() => {
@@ -187,6 +193,7 @@ export const BudgetProvider = ({ children }) => {
         updateMovement,
         handlePreviousMonth,
         handleNextMonth,
+        handleCurrentMonth,
       }}
     >
       {children}

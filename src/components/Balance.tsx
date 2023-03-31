@@ -8,13 +8,22 @@ import moment from 'moment'
 import numeral from 'numeral'
 
 export default function Balance() {
-  const { saldo, despesa, receita, currentMonth, handlePreviousMonth, handleNextMonth } =
-    useContext(budgetContext)
+  const {
+    saldo,
+    despesa,
+    receita,
+    currentMonth,
+    handlePreviousMonth,
+    handleNextMonth,
+    handleCurrentMonth,
+  } = useContext(budgetContext)
 
-  const today = new Date(Date.now())
-  const todayMes = today.getMonth() + 1
+  const today = new Date()
+  const primeiroDiaDoMes = new Date(today.getFullYear(), today.getMonth(), 1) // cria uma nova instância de Date com o primeiro dia do mês atual
+  const todayMes = primeiroDiaDoMes.getTime() // obtém os milissegundos correspondentes ao primeiro dia do mês atual
 
-  const mesApp = moment(currentMonth).format('M')
+  // obtém os milissegundos correspondentes ao mes alterado pela app
+  const appDate = currentMonth.getTime()
 
   const avisoMes = () => {
     return Alert.alert('Sorry!', "There aren't datas from next month!", [
@@ -144,7 +153,10 @@ export default function Balance() {
             alignContent: 'center',
           }}
         >
-          <Text style={{ textAlign: 'center', fontSize: 15, fontWeight: 'bold' }}>
+          <Text
+            style={{ textAlign: 'center', fontSize: 15, fontWeight: 'bold' }}
+            onPress={() => handleCurrentMonth()}
+          >
             {moment(currentMonth).format('MMMM/YYYY')}
           </Text>
         </View>
@@ -161,7 +173,7 @@ export default function Balance() {
             color='gray'
             size={32}
             onPress={() => {
-              todayMes <= parseInt(mesApp) ? avisoMes() : handleNextMonth()
+              todayMes <= appDate ? avisoMes() : handleNextMonth()
             }}
           />
         </View>
