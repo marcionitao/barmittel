@@ -36,6 +36,7 @@ export default function Balance() {
       containerStyle={{
         borderTopStartRadius: 10,
         borderTopEndRadius: 10,
+        borderColor: '#006e61',
       }}
     >
       <Card.Title>Saldo Disponivel</Card.Title>

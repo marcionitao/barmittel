@@ -1,6 +1,7 @@
 import firestore, { firebase } from '@react-native-firebase/firestore'
 import { createContext, useEffect, useState } from 'react'
 import { Budget, BudgetContextType } from '../@types/navigation'
+import { Keyboard } from 'react-native'
 
 // create context
 export const BudgetContext = createContext<BudgetContextType>({
@@ -8,6 +9,7 @@ export const BudgetContext = createContext<BudgetContextType>({
   saldo: 0,
   despesa: 0,
   receita: 0,
+  keyboardVisible: false,
   currentMonth: new Date(),
   addMovement: () => {},
   removeMovement: () => {},
@@ -25,6 +27,7 @@ export const BudgetProvider = ({ children }) => {
   const [receita, setReceita] = useState(0)
   const [despesa, setDespesa] = useState(0)
   const [currentMonth, setCurrentMonth] = useState(new Date())
+  const [keyboardVisible, setKeyboardVisible] = useState(false)
 
   const handlePreviousMonth = () => {
     const prevMonth = new Date(currentMonth)
@@ -36,7 +39,6 @@ export const BudgetProvider = ({ children }) => {
     const currMonth = new Date()
     currMonth.setMonth(currMonth.getMonth())
     setCurrentMonth(currMonth)
-    console.log(currMonth)
   }
 
   const handleNextMonth = () => {
@@ -45,6 +47,22 @@ export const BudgetProvider = ({ children }) => {
     setCurrentMonth(nextMonth)
   }
 
+  // trata de ajustar o teclado
+  useEffect(() => {
+    const showListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true)
+    })
+    const hideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false)
+    })
+
+    return () => {
+      showListener.remove()
+      hideListener.remove()
+    }
+  }, [])
+
+  // trata da lista de movimentos
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -76,6 +94,7 @@ export const BudgetProvider = ({ children }) => {
     })
   }, [currentMonth])
 
+  // trata dos valores de soma, balanço dos movimentos referente a cada mes
   useEffect(() => {
     async function getSoma() {
       try {
@@ -187,6 +206,7 @@ export const BudgetProvider = ({ children }) => {
         saldo,
         receita,
         despesa,
+        keyboardVisible,
         currentMonth,
         addMovement,
         removeMovement,

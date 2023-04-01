@@ -21,7 +21,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
   route = useRoute()
   navigation = useNavigation()
 
-  const { addMovement, updateMovement } = useContext(budgetContext)
+  const { addMovement, updateMovement, keyboardVisible } = useContext(budgetContext)
 
   const [carteira, setCarteira] = useState(route.params ? route.params : {})
 
@@ -132,52 +132,53 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
               onChangeText={(descricao) => setCarteira({ ...carteira, descricao })}
               placeholder='Descrição do Movimento'
             />
-
-            <View
-              style={{
-                width: '100%',
-                alignItems: 'center',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                marginTop: 35,
-              }}
-            >
+            {keyboardVisible ? null : (
               <View
                 style={{
-                  width: '50%',
-                  padding: 2,
+                  width: '100%',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  marginTop: 35,
                 }}
               >
-                <Button
-                  title='Cancel'
-                  type='outline'
-                  titleStyle={{ color: 'grey' }}
-                  style={{ marginTop: 25, marginBottom: 15 }}
-                  color='#f6f6f6'
-                  onPress={() => {
-                    navigation.goBack()
+                <View
+                  style={{
+                    width: '50%',
+                    padding: 2,
                   }}
-                />
-              </View>
-              <View
-                style={{
-                  width: '50%',
-                  padding: 2,
-                }}
-              >
-                <Button
-                  title='Save'
-                  style={{ marginTop: 25, marginBottom: 15 }}
-                  color='#006e61'
-                  onPress={() => {
-                    carteira.id !== undefined
-                      ? updateMovement(carteira.id, carteira)
-                      : addMovement(carteira)
-                    navigation.goBack()
+                >
+                  <Button
+                    title='Cancel'
+                    type='outline'
+                    titleStyle={{ color: 'grey' }}
+                    style={{ marginTop: 25, marginBottom: 15 }}
+                    color='#f6f6f6'
+                    onPress={() => {
+                      navigation.goBack()
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    width: '50%',
+                    padding: 2,
                   }}
-                />
+                >
+                  <Button
+                    title='Save'
+                    style={{ marginTop: 25, marginBottom: 15 }}
+                    color='#006e61'
+                    onPress={() => {
+                      carteira.id !== undefined
+                        ? updateMovement(carteira.id, carteira)
+                        : addMovement(carteira)
+                      navigation.goBack()
+                    }}
+                  />
+                </View>
               </View>
-            </View>
+            )}
           </View>
         </Card>
       </LinearGradient>

@@ -13,6 +13,7 @@ export type BudgetContextType = {
   receita: number
   despesa: number
   currentMonth: Date
+  keyboardVisible: boolean
   addMovement: (newMovement: Budget) => void
   removeMovement: (movementId: string) => void
   updateMovement: (movementId: string, formData: Budget) => void

@@ -86,6 +86,7 @@ export default function MovementList({ navigation }: MovimentosProps) {
       containerStyle={{
         borderTopStartRadius: 10,
         borderTopEndRadius: 10,
+        borderColor: '#006e61',
       }}
     >
       <FlatList data={movements} keyExtractor={(item) => item.id} renderItem={getItems} />
