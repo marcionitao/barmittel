@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
 import { Platform } from 'react-native'
+import SplashScreen from 'react-native-splash-screen'
+
 import { BudgetProvider } from './src/context/budgetContext'
 import { Routes } from './src/routes'
 
@@ -12,6 +15,10 @@ if (Platform.OS === 'android') {
 }
 
 export default function App() {
+  useEffect(() => {
+    SplashScreen.hide()
+  }, [])
+
   return (
     <BudgetProvider>
       <Routes />
