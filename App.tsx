@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Platform } from 'react-native'
+import { Platform, StatusBar } from 'react-native'
 import SplashScreen from 'react-native-splash-screen'
 
 import { BudgetProvider } from './src/context/budgetContext'
@@ -21,6 +21,7 @@ export default function App() {
 
   return (
     <BudgetProvider>
+      <StatusBar barStyle='dark-content' backgroundColor='#F8B600' />
       <Routes />
     </BudgetProvider>
   )
