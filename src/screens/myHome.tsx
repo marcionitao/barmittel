@@ -32,6 +32,12 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
+    marginHorizontal: 0,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 16,
+    overflow: 'hidden',
   },
 })
 
