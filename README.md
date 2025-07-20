@@ -18,8 +18,6 @@ Barmittel is a personal finance control app built with React Native, designed to
 * **Firebase:** Used for backend services like Firestore for data storage.
 * **ESLint and Prettier:** For code linting and formatting.
 
-## Getting Started
-
 ### Prerequisites
 
 * Node.js
