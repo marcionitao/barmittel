@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MovementList from '../components/MovimentList'
 import NewFAB from '../components/NewFAB'
@@ -9,14 +9,15 @@ import Balance from '../components/Balance'
 
 const MyHome = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <LinearGradient
         // Background Linear Gradient
         colors={['#F8B600', '#fff']}
+        style={styles.container}
       >
         <Balance />
 
-        <View style={{ height: '68%' }}>
+        <View style={styles.listContainer}>
           <MovementList />
         </View>
       </LinearGradient>
@@ -24,5 +25,14 @@ const MyHome = () => {
     </SafeAreaView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  listContainer: {
+    flex: 1,
+  },
+})
 
 export default MyHome

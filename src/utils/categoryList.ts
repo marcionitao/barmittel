@@ -17,4 +17,6 @@ export const categorias = [
   { label: 'COMER FORA', value: 'COMER FORA' },
   { label: 'LAZER', value: 'LAZER' },
   { label: 'PREMIO', value: 'PREMIO' },
+  { label: 'DROGARIA', value: 'DROGARIA' },
+  { label: 'GASOLINA', value: 'GASOLINA' }
 ]

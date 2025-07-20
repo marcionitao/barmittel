@@ -11,12 +11,12 @@ export const BudgetContext = createContext<BudgetContextType>({
   receita: 0,
   keyboardVisible: false,
   currentMonth: new Date(),
-  addMovement: () => {},
-  removeMovement: () => {},
-  updateMovement: () => {},
-  handlePreviousMonth: () => {},
-  handleNextMonth: () => {},
-  handleCurrentMonth: () => {},
+  addMovement: () => { },
+  removeMovement: () => { },
+  updateMovement: () => { },
+  handlePreviousMonth: () => { },
+  handleNextMonth: () => { },
+  handleCurrentMonth: () => { },
 })
 
 // create provider
@@ -62,88 +62,50 @@ export const BudgetProvider = ({ children }) => {
     }
   }, [])
 
-  // trata da lista de movimentos
+  // trata da lista iniciaal de movimentos
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const db = await firestore()
-          .collection('orcamento')
-          .orderBy('data', 'desc')
-          .where('data', '>=', firstDayCurrentMonth)
-          .where('data', '<', firstDayNextMonth)
-          .onSnapshot((querySnapshot) => {
-            const myData = querySnapshot.docs.map((doc) => {
-              return {
-                id: doc.id,
-                ...doc.data(),
-              }
-            }) as Budget[]
-
-            setMovements(myData)
-          })
-        return () => db()
-      } catch (error) {
-        console.log('Erro lista...', error)
-      }
-    }
     const firstDayCurrentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
     const firstDayNextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
 
-    fetchData().catch((error) => {
-      console.log('Erro fetchData:', error)
-    })
-  }, [currentMonth])
+    const unsubscribe = firestore()
+      .collection('orcamento')
+      .orderBy('data', 'desc')
+      .where('data', '>=', firstDayCurrentMonth)
+      .where('data', '<', firstDayNextMonth)
+      .onSnapshot((querySnapshot) => {
+        let despesa = 0
+        let receita = 0
 
-  // trata dos valores de soma, balanço dos movimentos referente a cada mes
-  useEffect(() => {
-    async function getSoma() {
-      try {
-        const querySnapshot = await firestore()
-          .collection('orcamento')
-          .where('data', '>=', firstDayCurrentMonth)
-          .where('data', '<', firstDayNextMonth)
-          .onSnapshot((querySnapshot) => {
-            let despesa = 0
-            let receita = 0
+        const myData = querySnapshot.docs.map((doc) => {
+          const data = doc.data()
+          if (data.acao === 'Despesa') {
+            despesa += data.movimentos
+          } else if (data.acao === 'Receita') {
+            receita += data.movimentos
+          }
 
-            querySnapshot.docs.map((doc) => {
-              if (doc.data().acao === 'Despesa') {
-                despesa += doc.data().movimentos
-              } else if (doc.data().acao === 'Receita') {
-                receita += doc.data().movimentos
-              }
-            })
-            const diff = receita - despesa
+          return {
+            id: doc.id,
+            ...data,
+          } as Budget
+        })
 
-            setReceita(receita)
-            setDespesa(despesa)
-            setSaldo(diff)
-          })
-        return () => querySnapshot()
-      } catch (error) {
-        console.log('Erro saldos etc....', error)
-      }
-    }
-    const firstDayCurrentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
-    const firstDayNextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+        const saldo = receita - despesa
 
-    getSoma().catch((error) => {
-      console.log('Erro fetchData:', error)
-    })
+        setMovements(myData)
+        setReceita(receita)
+        setDespesa(despesa)
+        setSaldo(saldo)
+      }, (error) => {
+        console.log('Erro no listener:', error)
+      })
+
+    return () => unsubscribe()
   }, [currentMonth])
 
   const addMovement = async (movement: Budget) => {
     const timestamp = firebase.firestore.Timestamp.now()
     const dateCondition = movement.data === undefined ? timestamp : movement.data
-
-    const newMovement = {
-      id: '',
-      acao: movement.acao,
-      categoria: movement.categoria,
-      descricao: movement.descricao,
-      movimentos: movement.movimentos,
-      data: dateCondition,
-    } as Budget
 
     try {
       await firebase
@@ -158,7 +120,7 @@ export const BudgetProvider = ({ children }) => {
         })
         .then(() => console.log('Dados salvos com sucesso!'))
         .catch((error) => console.error(error))
-      setMovements([newMovement, ...movements])
+      // setMovements([newMovement, ...movements])
     } catch (error) {
       console.error(error)
     }
