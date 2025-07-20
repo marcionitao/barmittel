@@ -17,6 +17,7 @@ export type BudgetContextType = {
   addMovement: (newMovement: Budget) => void
   removeMovement: (movementId: string) => void
   updateMovement: (movementId: string, formData: Budget) => void
+  setCurrentMonth: (date: Date) => void
   handlePreviousMonth: () => void
   handleNextMonth: () => void
   handleCurrentMonth: () => void

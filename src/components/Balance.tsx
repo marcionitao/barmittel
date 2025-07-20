@@ -1,18 +1,37 @@
 import { Card, Icon } from '@rneui/themed'
-import { useContext } from 'react'
-import { Alert, Image, Text, View } from 'react-native'
+import { useContext, useState } from 'react'
+import { Alert, Image, Text, TouchableOpacity, View } from 'react-native'
 
 import budgetContext from '../context/budgetContext'
 
 import moment from 'moment'
 import numeral from 'numeral'
+import MonthPicker from 'react-native-month-year-picker'
 
 export default function Balance() {
+  // inicio: bloco data escolher mes/ano
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, newDate) => {
+    setShow(false);
+    console.log(event)
+    if (event === 'neutralAction') {
+      console.log('Novo mês:', newDate.getMonth() + 1, 'Ano:', newDate.getFullYear());
+      handleCurrentMonth(); // volta para o mês atual do sistema
+    } else if (event === 'dateSetAction') {
+      setCurrentMonth(newDate);
+      console.log('Novo mês:', newDate.getMonth() + 1, 'Ano:', newDate.getFullYear());
+    }
+  };
+
+  // fim: bloco data escolher mes/ano
+
   const {
     saldo,
     despesa,
     receita,
     currentMonth,
+    setCurrentMonth,
     handlePreviousMonth,
     handleNextMonth,
     handleCurrentMonth,
@@ -139,13 +158,14 @@ export default function Balance() {
             alignContent: 'flex-start',
           }}
         >
-          <Icon
-            name='skip-previous'
-            type='MaterialCommunityIcons'
-            color='gray'
-            size={32}
-            onPress={() => handlePreviousMonth()}
-          />
+          <TouchableOpacity onPress={() => handlePreviousMonth()}>
+            <Icon
+              name='skip-previous'
+              type='MaterialCommunityIcons'
+              color='gray'
+              size={32}
+            />
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -154,12 +174,24 @@ export default function Balance() {
             alignContent: 'center',
           }}
         >
-          <Text
-            style={{ textAlign: 'center', fontSize: 15, fontWeight: 'bold' }}
-            onPress={() => handleCurrentMonth()}
-          >
-            {moment(currentMonth).format('MMMM/YYYY')}
-          </Text>
+          <TouchableOpacity onPress={() => setShow(true)}>
+            <Text style={{ textAlign: 'center', fontSize: 17, fontWeight: 'bold' }}>
+              {moment(currentMonth).format('MMMM/YYYY')}
+            </Text>
+          </TouchableOpacity>
+          {show && (
+            <MonthPicker
+              onChange={onChange}
+              value={currentMonth}
+              minimumDate={new Date(2019, 0, 1)}
+              maximumDate={new Date()}
+              locale='en'
+              okButton="OK"
+              cancelButton="Cancel"
+              neutralButton="Hoje"
+            />
+          )}
+
         </View>
         <View
           style={{
@@ -168,15 +200,16 @@ export default function Balance() {
             alignContent: 'flex-end',
           }}
         >
-          <Icon
-            name='skip-next'
-            type='MaterialCommunityIcons'
-            color='gray'
-            size={32}
-            onPress={() => {
-              todayMes <= appDate ? avisoMes() : handleNextMonth()
-            }}
-          />
+          <TouchableOpacity onPress={() => {
+            todayMes <= appDate ? avisoMes() : handleNextMonth()
+          }}>
+            <Icon
+              name='skip-next'
+              type='MaterialCommunityIcons'
+              color='gray'
+              size={32}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </Card>
