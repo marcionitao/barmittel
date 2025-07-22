@@ -68,6 +68,9 @@ export const BudgetProvider = ({ children }) => {
     const firstDayCurrentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
     const firstDayNextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
 
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // garante comparação exata  
+
     const unsubscribe = firestore()
       .collection('orcamento')
       .orderBy('data', 'desc')
@@ -77,13 +80,8 @@ export const BudgetProvider = ({ children }) => {
         let despesa = 0
         let receita = 0
 
-        const myData = querySnapshot.docs.map((doc) => {
+        const allMovements = querySnapshot.docs.map((doc) => {
           const data = doc.data()
-          if (data.acao === 'Despesa') {
-            despesa += data.movimentos
-          } else if (data.acao === 'Receita') {
-            receita += data.movimentos
-          }
 
           return {
             id: doc.id,
@@ -91,9 +89,21 @@ export const BudgetProvider = ({ children }) => {
           } as Budget
         })
 
+        // calcula saldo apenas com movimentos cuja data <= hoje
+        allMovements.forEach((movement) => {
+          const movementDate = movement.data.toDate()
+          if (movementDate <= today) {
+            if (movement.acao === 'Despesa') {
+              despesa += movement.movimentos
+            } else if (movement.acao === 'Receita') {
+              receita += movement.movimentos
+            }
+          }
+        })
+
         const saldo = receita - despesa
 
-        setMovements(myData)
+        setMovements(allMovements)
         setReceita(receita)
         setDespesa(despesa)
         setSaldo(saldo)
@@ -126,7 +136,7 @@ export const BudgetProvider = ({ children }) => {
       console.error(error)
     }
   }
-
+  // remove movement
   const removeMovement = (documentId: string) => {
     firestore()
       .collection('orcamento')
@@ -136,7 +146,7 @@ export const BudgetProvider = ({ children }) => {
         setMovements(movements.filter((movement) => movement.id !== documentId))
       })
   }
-
+  // update movement
   const updateMovement = (documentId: string, formData: Budget) => {
     firestore()
       .collection('orcamento')

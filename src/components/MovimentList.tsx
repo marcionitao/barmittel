@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { Avatar, Button, ListItem } from '@rneui/base'
-import { Card } from '@rneui/themed'
+import { Card, Icon } from '@rneui/themed'
 import { useContext } from 'react'
 import { Alert, FlatList } from 'react-native'
 
@@ -33,6 +33,12 @@ export default function MovementList({ navigation }: MovimentosProps) {
   }
 
   const getItems = ({ item }) => {
+    // 🔧 converte Timestamp para Date se necessário
+    const data = item.data.toDate()
+
+    // 🔧 verifica se a data é futura
+    const isFuture = data > new Date()
+
     return (
       <ListItem.Swipeable
         key={item.id}
@@ -59,21 +65,58 @@ export default function MovementList({ navigation }: MovimentosProps) {
       >
         <Avatar
           rounded
-          containerStyle={{ backgroundColor: colorGenerator() }}
+          containerStyle={{
+            backgroundColor: colorGenerator(),
+            opacity: isFuture ? 0.5 : 1, // 🔧 efeito visual para futuros
+          }}
           size={48}
-          title={item.categoria[0]}
-          titleStyle={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}
+          // 🔧 Se for futuro, mostra ícone de relógio. Caso contrário, mostra a primeira letra.
+          {...(isFuture
+            ? {
+              icon: {
+                name: 'schedule', // ícone de relógio
+                type: 'material', // biblioteca de ícones
+                color: 'white',
+                size: 48,
+              },
+            }
+            : {
+              title: item.categoria[0],
+              titleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold' },
+            })}
         />
         <ListItem.Content>
-          <ListItem.Title>{item.categoria}</ListItem.Title>
-          <ListItem.Subtitle>{moment(item.data.toDate()).format('DD/MM/YYYY')}</ListItem.Subtitle>
+          <ListItem.Title
+            style={{
+              color: isFuture ? 'gray' : 'black',
+              fontWeight: 'normal',
+              fontSize: 17,
+              alignSelf: 'flex-start',
+              opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
+            }}>
+            {item.categoria}
+          </ListItem.Title>
+          <ListItem.Subtitle style={{
+            color: isFuture ? 'gray' : 'black',
+            fontWeight: 'normal',
+            fontSize: 16,
+            alignSelf: 'flex-start',
+            opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
+          }}>
+            {moment(item.data.toDate()).format('DD MMMM YYYY')}
+          </ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Title
           style={{
-            color: item.acao === 'Despesa' ? 'red' : 'green',
+            color: isFuture
+              ? '#6c757d' // 🔧 Cor especial para valores futuros
+              : item.acao === 'Despesa'
+                ? 'red'
+                : 'green',
             fontWeight: 'bold',
-            fontSize: 18,
+            fontSize: 17,
             alignSelf: 'flex-start',
+            opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
           }}
         >
           {numeral(item.movimentos).format('0,0.00')}€

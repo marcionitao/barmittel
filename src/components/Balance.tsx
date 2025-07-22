@@ -14,13 +14,10 @@ export default function Balance() {
 
   const onChange = (event, newDate) => {
     setShow(false);
-    console.log(event)
     if (event === 'neutralAction') {
-      console.log('Novo mês:', newDate.getMonth() + 1, 'Ano:', newDate.getFullYear());
       handleCurrentMonth(); // volta para o mês atual do sistema
     } else if (event === 'dateSetAction') {
       setCurrentMonth(newDate);
-      console.log('Novo mês:', newDate.getMonth() + 1, 'Ano:', newDate.getFullYear());
     }
   };
 
@@ -176,7 +173,7 @@ export default function Balance() {
         >
           <TouchableOpacity onPress={() => setShow(true)}>
             <Text style={{ textAlign: 'center', fontSize: 17, fontWeight: 'bold' }}>
-              {moment(currentMonth).format('MMMM/YYYY')}
+              {moment(currentMonth).format('MMMM YYYY')}
             </Text>
           </TouchableOpacity>
           {show && (
