@@ -1,6 +1,6 @@
 import firestore, { firebase } from '@react-native-firebase/firestore'
 import { createContext, useEffect, useState } from 'react'
-import { Budget, BudgetContextType } from '../@types/navigation'
+import { Budget, BudgetContextType } from '../@types/budget'
 import { Keyboard } from 'react-native'
 
 // create context
