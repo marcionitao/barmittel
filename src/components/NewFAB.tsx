@@ -24,6 +24,15 @@ const NewFAB = () => {
       onClose={() => setOpen(!open)}
     >
       <SpeedDial.Action
+        title='Agenda'
+        icon={{ name: 'schedule', color: '#fff' }}
+        color='blue'
+        onPress={() => {
+          navigation.navigate('mySchedule', { acao: 'Agenda' })
+          setOpen(!open)
+        }}
+      />
+      <SpeedDial.Action
         title='Receita'
         icon={{ name: 'arrow-upward', color: '#fff' }}
         color='green'

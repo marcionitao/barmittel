@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import myForm from '../screens/myForm'
-import myHome from '../screens/myHome'
+import MyForm from '../screens/MyForm'
+import MyHome from '../screens/MyHome'
+import MySchedule from '../screens/MySchedule'
 
 // const Stack = createNativeStackNavigator();
 const { Navigator, Screen } = createNativeStackNavigator()
@@ -17,7 +18,7 @@ export function StackRoutes() {
           headerStyle: { backgroundColor: '#F8B600' },
           headerShadowVisible: false,
         }}
-        component={myHome}
+        component={MyHome}
       />
       <Screen
         name='myForm'
@@ -28,7 +29,18 @@ export function StackRoutes() {
           headerStyle: { backgroundColor: '#F8B600' },
           headerShadowVisible: false,
         }}
-        component={myForm}
+        component={MyForm}
+      />
+      <Screen
+        name='mySchedule'
+        options={{
+          title: 'Movimentos Agendados',
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerStyle: { backgroundColor: '#F8B600' },
+          headerShadowVisible: false,
+        }}
+        component={MySchedule}
       />
     </Navigator>
   )

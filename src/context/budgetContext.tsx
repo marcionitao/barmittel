@@ -18,6 +18,7 @@ export const BudgetContext = createContext<BudgetContextType>({
   handlePreviousMonth: () => { },
   handleNextMonth: () => { },
   handleCurrentMonth: () => { },
+  movimentosFuturos: [],
 })
 
 // create provider
@@ -29,6 +30,9 @@ export const BudgetProvider = ({ children }) => {
   const [despesa, setDespesa] = useState(0)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [keyboardVisible, setKeyboardVisible] = useState(false)
+
+  const [movimentosFuturos, setMovimentosFuturos] = useState<Budget[]>([])
+
 
   const handlePreviousMonth = () => {
     const prevMonth = new Date(currentMonth)
@@ -69,7 +73,7 @@ export const BudgetProvider = ({ children }) => {
     const firstDayNextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
 
     const today = new Date()
-    today.setHours(0, 0, 0, 0) // garante comparação exata  
+    // today.setHours(0, 0, 0, 0) // garante comparação exata  
 
     const unsubscribe = firestore()
       .collection('orcamento')
@@ -114,10 +118,35 @@ export const BudgetProvider = ({ children }) => {
     return () => unsubscribe()
   }, [currentMonth])
 
+  // lida com movimentos futuros
+  useEffect(() => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const unsubscribe = firestore()
+      .collection('orcamento')
+      .orderBy('data', 'asc')
+      .where('data', '>', today) // 🔮 só datas futuras
+      .onSnapshot((querySnapshot) => {
+        const futuros = querySnapshot.docs.map((doc) => {
+          const data = doc.data()
+          return {
+            id: doc.id,
+            ...data,
+          } as Budget
+        })
+
+        setMovimentosFuturos(futuros) // ⬅️ novo state!
+      })
+
+    return () => unsubscribe()
+  }, [])
+
   const addMovement = async (movement: Budget) => {
     const timestamp = firebase.firestore.Timestamp.now()
     const dateCondition = movement.data === undefined ? timestamp : movement.data
 
+    console.log("data: ", movement.data)
     try {
       await firebase
         .firestore()
@@ -129,12 +158,15 @@ export const BudgetProvider = ({ children }) => {
           movimentos: movement.movimentos,
           data: dateCondition,
         })
-        .then(() => console.log('Dados salvos com sucesso!'))
+        .then(() => console.log('Dados salvos com sucesso!', timestamp))
         .catch((error) => console.error(error))
-      // setMovements([newMovement, ...movements])
+
     } catch (error) {
       console.error(error)
     }
+    // atualiza o estado local
+    handleCurrentMonth()
+
   }
   // remove movement
   const removeMovement = (documentId: string) => {
@@ -188,6 +220,7 @@ export const BudgetProvider = ({ children }) => {
         handlePreviousMonth,
         handleNextMonth,
         handleCurrentMonth,
+        movimentosFuturos,
       }}
     >
       {children}

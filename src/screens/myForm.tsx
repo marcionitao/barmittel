@@ -54,7 +54,6 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
               style={{ backgroundColor: '#f6f6f6' }}
               onChange={(value) => {
                 setInputDate(value)
-                //console.warn(value.toLocaleDateString())
                 setCarteira({
                   ...carteira,
                   //data: value,
@@ -80,9 +79,9 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
               separator='.'
               precision={2}
               minValue={0}
-              // onChangeText={(movimentos) => {
-              //   console.log(movimentos)
-              // }}
+            // onChangeText={(movimentos) => {
+            //   console.log(movimentos)
+            // }}
             />
 
             <Text style={{ marginTop: 0, marginBottom: 2 }}>Ação</Text>
@@ -170,6 +169,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
                     style={{ marginTop: 25, marginBottom: 15 }}
                     color='#006e61'
                     onPress={() => {
+
                       carteira.id !== undefined
                         ? updateMovement(carteira.id, carteira)
                         : addMovement(carteira)

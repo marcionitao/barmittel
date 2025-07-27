@@ -21,6 +21,7 @@ export type BudgetContextType = {
   handlePreviousMonth: () => void
   handleNextMonth: () => void
   handleCurrentMonth: () => void
+  movimentosFuturos: Budget[]
 }
 
 export declare global {
@@ -28,6 +29,7 @@ export declare global {
     interface RootParamList {
       myHome: undefined
       myForm: { acao?: string }
+      mySchedule: { acao?: string }
     }
   }
 }
