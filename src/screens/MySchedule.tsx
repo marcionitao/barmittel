@@ -5,7 +5,6 @@ import { StyleSheet, View } from 'react-native'
 import { en, registerTranslation } from 'react-native-paper-dates'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ScheduledMovements from '../components/ScheduledMovements'
-import Balance from '../components/Balance'
 
 registerTranslation('EN', en)
 interface MovimentosProps {
@@ -37,10 +36,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    marginHorizontal: 0,
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: 'transparent',
     borderRadius: 16,
     overflow: 'hidden',
   },

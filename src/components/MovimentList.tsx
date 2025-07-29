@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { Avatar, Button, ListItem } from '@rneui/base'
-import { Card, Icon } from '@rneui/themed'
+import { Card } from '@rneui/themed'
 import { useContext } from 'react'
 import { Alert, FlatList } from 'react-native'
 
@@ -9,6 +9,7 @@ import budgetContext from '../context/budgetContext'
 //import { fakeData } from '../fakeData/data'
 import moment from 'moment'
 import numeral from 'numeral'
+import { categorias } from '../utils/categoryList'
 import colorGenerator from '../utils/colorGenerator'
 
 interface MovimentosProps {
@@ -39,6 +40,9 @@ export default function MovementList({ navigation }: MovimentosProps) {
     // 🔧 verifica se a data é futura
     const isFuture = data > new Date()
 
+    // 🔧 encontra a categoria correspondente no array de categorias
+    const categoriaInfo = categorias.find((cat) => cat.value === item.categoria)
+
     return (
       <ListItem.Swipeable
         key={item.id}
@@ -66,11 +70,11 @@ export default function MovementList({ navigation }: MovimentosProps) {
         <Avatar
           rounded
           containerStyle={{
-            backgroundColor: colorGenerator(),
+            backgroundColor: !isFuture && categoriaInfo ? categoriaInfo.color : colorGenerator(),
             opacity: isFuture ? 0.5 : 1, // 🔧 efeito visual para futuros
           }}
           size={48}
-          // 🔧 Se for futuro, mostra ícone de relógio. Caso contrário, mostra a primeira letra.
+          // 🔧 Se for futuro, mostra ícone de relógio. Caso contrário, mostra o ícone da categoria.
           {...(isFuture
             ? {
               icon: {
@@ -81,8 +85,12 @@ export default function MovementList({ navigation }: MovimentosProps) {
               },
             }
             : {
-              title: item.categoria[0],
-              titleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold' },
+              icon: {
+                name: categoriaInfo ? categoriaInfo.icon : 'help-outline',
+                type: 'ionicon',
+                color: 'white',
+                size: 32,
+              },
             })}
         />
         <ListItem.Content>
@@ -96,13 +104,15 @@ export default function MovementList({ navigation }: MovimentosProps) {
             }}>
             {item.categoria}
           </ListItem.Title>
-          <ListItem.Subtitle style={{
-            color: isFuture ? 'gray' : 'black',
-            fontWeight: 'normal',
-            fontSize: 16,
-            alignSelf: 'flex-start',
-            opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
-          }}>
+          <ListItem.Subtitle
+            style={{
+              color: isFuture ? 'gray' : 'black',
+              fontWeight: 'normal',
+              fontSize: 16,
+              alignSelf: 'flex-start',
+              opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
+            }}
+          >
             {moment(item.data.toDate()).format('DD MMMM YYYY')}
           </ListItem.Subtitle>
         </ListItem.Content>
@@ -127,6 +137,7 @@ export default function MovementList({ navigation }: MovimentosProps) {
   return (
     <Card
       containerStyle={{
+        paddingHorizontal: 0,
         borderTopStartRadius: 10,
         borderTopEndRadius: 10,
         borderColor: '#006e61',

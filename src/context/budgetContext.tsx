@@ -146,7 +146,6 @@ export const BudgetProvider = ({ children }) => {
     const timestamp = firebase.firestore.Timestamp.now()
     const dateCondition = movement.data === undefined ? timestamp : movement.data
 
-    console.log("data: ", movement.data)
     try {
       await firebase
         .firestore()
@@ -158,7 +157,7 @@ export const BudgetProvider = ({ children }) => {
           movimentos: movement.movimentos,
           data: dateCondition,
         })
-        .then(() => console.log('Dados salvos com sucesso!', timestamp))
+        .then(() => console.log('Dados salvos com sucesso!'))
         .catch((error) => console.error(error))
 
     } catch (error) {

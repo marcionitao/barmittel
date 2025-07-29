@@ -160,6 +160,7 @@ export default function ScheduledMovements({ navigation }: ScheduledMovementsPro
         </Card>
       )}
       <Card containerStyle={{
+        paddingHorizontal: 0,
         borderTopStartRadius: 10,
         borderTopEndRadius: 10,
         borderColor: '#006e61',
