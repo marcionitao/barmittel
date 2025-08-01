@@ -24,11 +24,20 @@ const NewFAB = () => {
       onClose={() => setOpen(!open)}
     >
       <SpeedDial.Action
-        title='Agenda'
+        title='Grafico'
+        icon={{ name: 'bar-chart', color: '#fff' }}
+        color='orange'
+        onPress={() => {
+          navigation.navigate('myCharts', { acao: 'Grafico' })
+          setOpen(!open)
+        }}
+      />
+      <SpeedDial.Action
+        title='Itens Futuros'
         icon={{ name: 'schedule', color: '#fff' }}
         color='blue'
         onPress={() => {
-          navigation.navigate('mySchedule', { acao: 'Agenda' })
+          navigation.navigate('mySchedule', { acao: 'Itens Futuros' })
           setOpen(!open)
         }}
       />

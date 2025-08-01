@@ -2,16 +2,12 @@ import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MovementList from '../components/MovimentList'
 import NewFAB from '../components/NewFAB'
-import { FAB } from '@rneui/themed'
-import { useNavigation } from '@react-navigation/native'
 
 import { LinearGradient } from 'expo-linear-gradient'
 
 import Balance from '../components/Balance'
 
-const MyHome = () => {
-  const navigation = useNavigation()
-
+const MyCharts = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -22,10 +18,10 @@ const MyHome = () => {
         <Balance />
 
         <View style={styles.listContainer}>
-          <MovementList />
+          {/* <MovementList /> */}
         </View>
       </LinearGradient>
-      <NewFAB />
+      {/* <NewFAB /> */}
     </SafeAreaView>
   )
 }
@@ -42,4 +38,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default MyHome
+export default MyCharts

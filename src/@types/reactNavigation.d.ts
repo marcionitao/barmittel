@@ -4,6 +4,7 @@ export declare global {
       myHome: undefined
       myForm: { acao?: string }
       mySchedule: { acao?: string }
+      myCharts: { acao?: string }
     }
   }
 }
