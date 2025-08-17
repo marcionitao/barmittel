@@ -6,6 +6,8 @@ import NewFAB from '../components/NewFAB'
 import { LinearGradient } from 'expo-linear-gradient'
 
 import Balance from '../components/Balance'
+import Grafico from '../components/Grafico'
+import BalanceMinimal from '../components/BalanceMinimal'
 
 const MyCharts = () => {
   return (
@@ -15,10 +17,10 @@ const MyCharts = () => {
         colors={['#F8B600', '#fff']}
         style={styles.container}
       >
-        <Balance />
+        <BalanceMinimal />
 
         <View style={styles.listContainer}>
-          {/* <MovementList /> */}
+          <Grafico />
         </View>
       </LinearGradient>
       {/* <NewFAB /> */}

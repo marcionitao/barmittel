@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MyForm from '../screens/MyForm'
 import MyHome from '../screens/MyHome'
-import MySchedule from '../screens/MySchedule'
 import MyCharts from '../screens/MyCharts'
+import MyFuture from '../screens/MyFuture'
 
 // const Stack = createNativeStackNavigator();
 const { Navigator, Screen } = createNativeStackNavigator()
@@ -41,7 +41,7 @@ export function StackRoutes() {
           headerStyle: { backgroundColor: '#F8B600' },
           headerShadowVisible: false,
         }}
-        component={MySchedule}
+        component={MyFuture}
       />
       <Screen
         name="myCharts"

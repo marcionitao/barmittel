@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { Avatar, Button, ListItem } from '@rneui/base'
-import { Card, Icon } from '@rneui/themed'
+import { Card } from '@rneui/themed'
 import { useContext } from 'react'
 import { Alert, FlatList, View } from 'react-native'
 
@@ -10,11 +10,11 @@ import moment from 'moment'
 import numeral from 'numeral'
 import colorGenerator from '../utils/colorGenerator'
 
-interface ScheduledMovementsProps {
+interface MovementFutureProps {
   navigation?: any
 }
 
-export default function ScheduledMovements({ navigation }: ScheduledMovementsProps) {
+export default function MovementFuture({ navigation }: MovementFutureProps) {
   navigation = useNavigation()
 
   const { removeMovement, movimentosFuturos } = useContext(budgetContext)

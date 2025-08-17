@@ -8,7 +8,7 @@ import moment from 'moment'
 import numeral from 'numeral'
 import MonthPicker from 'react-native-month-year-picker'
 
-export default function Balance() {
+export default function BalanceMinimal() {
   // inicio: bloco data escolher mes/ano
   const [show, setShow] = useState(false);
 
@@ -54,15 +54,10 @@ export default function Balance() {
         borderColor: '#006e61',
       }}
     >
-      <Card.Title>Saldo Disponivel</Card.Title>
-      <Text style={{ textAlign: 'center', fontSize: 30, fontWeight: 'bold' }}>
-        {numeral(saldo).format('0,0.00')}€
-      </Text>
-
       <View
         style={{
           width: '100%',
-          marginTop: 5,
+          marginTop: 2,
           alignItems: 'center',
           flexDirection: 'row',
           flexWrap: 'wrap',
@@ -71,10 +66,9 @@ export default function Balance() {
         <View
           style={{
             width: '50%',
-            padding: 2,
+            padding: 1,
           }}
         >
-          <Card.Title>Receitas</Card.Title>
           <View
             style={{
               width: '100%',
@@ -84,10 +78,46 @@ export default function Balance() {
               flexWrap: 'wrap',
             }}
           >
+            <Text
+              style={{
+                textAlign: 'left',
+                fontSize: 15,
+                fontWeight: 'bold'
+              }}
+            >
+              Saldo Atual
+            </Text>
+
+            <Text
+              style={{
+                textAlign: 'left',
+                fontSize: 35,
+                fontWeight: 'bold'
+              }}
+            >
+              {numeral(saldo).format('0,0.00')}€
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            width: '50%',
+            padding: 2,
+          }}
+        >
+          <View
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
             <Image
               style={{
-                height: 32,
-                width: 32,
+                height: 30,
+                width: 30,
                 marginRight: 5,
                 resizeMode: 'contain',
               }}
@@ -96,43 +126,31 @@ export default function Balance() {
 
             <Text
               style={{
-                textAlign: 'center',
-                fontSize: 20,
-                fontWeight: 'normal',
+                textAlign: 'left',
+                fontSize: 25,
+                fontWeight: 'bold',
                 color: 'green',
               }}
             >
               {numeral(receita).format('0,0.00')}€
             </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            width: '50%',
-            padding: 5,
-          }}
-        >
-          <Card.Title>Despesas</Card.Title>
-          <View
-            style={{
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-            }}
-          >
             <Image
               style={{
-                height: 32,
-                width: 32,
+                height: 30,
+                width: 30,
                 resizeMode: 'contain',
                 marginRight: 5,
               }}
               source={require('../../assets/images/down.png')}
             />
-
-            <Text style={{ textAlign: 'right', fontSize: 20, fontWeight: 'normal', color: 'red' }}>
+            <Text
+              style={{
+                textAlign: 'left',
+                fontSize: 25,
+                fontWeight: 'bold',
+                color: 'red'
+              }}
+            >
               {numeral(despesa).format('0,0.00')}€
             </Text>
           </View>

@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { StyleSheet, View } from 'react-native'
 import { en, registerTranslation } from 'react-native-paper-dates'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ScheduledMovements from '../components/ScheduledMovements'
+import MovementFuture from '../components/MovementFuture'
 
 registerTranslation('EN', en)
 interface MovimentosProps {
@@ -12,7 +12,7 @@ interface MovimentosProps {
   navigation: any
 }
 
-const MySchedule = ({ route, navigation }: MovimentosProps) => {
+const MyFuture = ({ route, navigation }: MovimentosProps) => {
   route = useRoute()
   navigation = useNavigation()
   return (
@@ -23,7 +23,7 @@ const MySchedule = ({ route, navigation }: MovimentosProps) => {
         style={styles.container}
       >
         <View style={styles.listContainer}>
-          <ScheduledMovements />
+          <MovementFuture />
         </View>
       </LinearGradient>
     </SafeAreaView>
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default MySchedule
+export default MyFuture
