@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient'
 
 import Balance from '../components/Balance'
+import BalanceMinimal from '../components/BalanceMinimal'
 
 const MyHome = () => {
   const navigation = useNavigation()
@@ -19,7 +20,7 @@ const MyHome = () => {
         colors={['#F8B600', '#fff']}
         style={styles.container}
       >
-        <Balance />
+        <BalanceMinimal />
 
         <View style={styles.listContainer}>
           <MovementList />

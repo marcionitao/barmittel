@@ -154,18 +154,24 @@ export default function MovementFuture({ navigation }: MovementFutureProps) {
         </Card.Title>
       </View>
 
-      {futurosMovimentos.length === 0 && (
+      {/* {futurosMovimentos.length === 0 && (
         <Card>
           <Card.Title>Nenhum Movimento Futuro</Card.Title>
         </Card>
-      )}
+      )} */}
       <Card containerStyle={{
         paddingHorizontal: 0,
         borderTopStartRadius: 10,
         borderTopEndRadius: 10,
         borderColor: '#006e61',
       }}>
+
         <FlatList data={futurosMovimentos} keyExtractor={(item) => item.id} renderItem={getItems} />
+        {futurosMovimentos.length === 0 && (
+          <Card>
+            <Card.Title>Nenhum Movimento Futuro</Card.Title>
+          </Card>
+        )}
       </Card>
     </View>
   )
