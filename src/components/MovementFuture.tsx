@@ -154,11 +154,6 @@ export default function MovementFuture({ navigation }: MovementFutureProps) {
         </Card.Title>
       </View>
 
-      {/* {futurosMovimentos.length === 0 && (
-        <Card>
-          <Card.Title>Nenhum Movimento Futuro</Card.Title>
-        </Card>
-      )} */}
       <Card containerStyle={{
         paddingHorizontal: 0,
         borderTopStartRadius: 10,

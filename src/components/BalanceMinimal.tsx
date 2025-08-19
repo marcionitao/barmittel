@@ -82,7 +82,7 @@ export default function BalanceMinimal() {
               style={{
                 textAlign: 'left',
                 fontSize: 15,
-                fontWeight: 'bold'
+                fontWeight: 'normal'
               }}
             >
               Saldo Atual
@@ -91,8 +91,8 @@ export default function BalanceMinimal() {
             <Text
               style={{
                 textAlign: 'left',
-                fontSize: 35,
-                fontWeight: 'bold'
+                fontSize: 30,
+                fontWeight: 'normal'
               }}
             >
               {numeral(saldo).format('0,0.00')}€
@@ -128,7 +128,7 @@ export default function BalanceMinimal() {
               style={{
                 textAlign: 'left',
                 fontSize: 25,
-                fontWeight: 'bold',
+                fontWeight: 'normal',
                 color: 'green',
               }}
             >
@@ -147,7 +147,7 @@ export default function BalanceMinimal() {
               style={{
                 textAlign: 'left',
                 fontSize: 25,
-                fontWeight: 'bold',
+                fontWeight: 'normal',
                 color: 'red'
               }}
             >
