@@ -69,7 +69,6 @@ const Grafico = () => {
         borderColor: '#006e61',
       }}
     >
-      <Text style={{ fontSize: 14, fontWeight: 'bold', marginLeft: 10 }}>Sumário Despesas</Text>
       <View style={{ alignItems: 'center', padding: 5 }}>
         {series.length === 0 ? (
           <Text>Sem dados para este mês</Text>
@@ -85,11 +84,11 @@ const Grafico = () => {
             />
 
             {/* Lista inline (sem scroll) */}
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 15 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
               {categoriasOrdenadas.map((item, index) => (
                 <View
                   key={index}
-                  style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16, marginBottom: 8 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', marginRight: 14, marginBottom: 5 }}
                 >
                   {/* Quadradinho com a cor da categoria */}
                   <View
@@ -123,15 +122,15 @@ const Grafico = () => {
                   borderColor: '#ddd'
                 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Icon name={item.icon} type="ionicon" size={20} color={item.cor} />
-                    <Text style={{ marginLeft: 10, fontSize: 14, flex: 1 }}>
+                    <Icon name={item.icon} type="ionicon" size={18} color={item.cor} />
+                    <Text style={{ marginLeft: 10, fontSize: 12, flex: 1 }}>
                       {item.nome}
                     </Text>
-                    <Text style={{ fontSize: 14, fontWeight: '600' }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600' }}>
                       {numeral(item.valor).format('0,0.00')}€
                     </Text>
                   </View>
-                  <Text style={{ marginLeft: 30, fontSize: 12, color: '#555' }}>
+                  <Text style={{ marginLeft: 30, fontSize: 10, color: '#555' }}>
                     {item.transacoes} {item.transacoes === 1 ? 'transação' : 'transações'}
                   </Text>
                 </View>
