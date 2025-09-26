@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native'
-import { Avatar, Button, ListItem } from '@rneui/base'
+import { Button, Icon, ListItem } from '@rneui/base'
 import { Card } from '@rneui/themed'
 import { useContext } from 'react'
-import { Alert, FlatList, View } from 'react-native'
+import { Alert, FlatList, Text, View } from 'react-native'
 
 import budgetContext from '../context/budgetContext'
 
@@ -84,28 +84,25 @@ export default function MovementFuture({ navigation }: MovementFutureProps) {
           />
         )}
       >
-        <Avatar
-          rounded
-          containerStyle={{
+        <View
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
             backgroundColor: colorGenerator(),
-            opacity: isFuture ? 0.5 : 1, // 🔧 efeito visual para futuros
+            opacity: isFuture ? 0.5 : 1,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
-          size={48}
-          // 🔧 Se for futuro, mostra ícone de relógio. Caso contrário, mostra a primeira letra.
-          {...(isFuture
-            ? {
-              icon: {
-                name: 'schedule', // ícone de relógio
-                type: 'material', // biblioteca de ícones
-                color: 'white',
-                size: 48,
-              },
-            }
-            : {
-              title: item.categoria[0],
-              titleStyle: { color: 'white', fontSize: 20, fontWeight: 'bold' },
-            })}
-        />
+        >
+          {isFuture ? (
+            <Icon name="schedule" type="material" color="white" size={32} />
+          ) : item.categoria && item.categoria.length > 0 ? (
+            <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>{item.categoria[0]}</Text>
+          ) : (
+            <Icon name="help-outline" type="ionicon" color="white" size={32} />
+          )}
+        </View>
         <ListItem.Content>
           <ListItem.Title
             style={{

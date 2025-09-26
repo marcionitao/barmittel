@@ -1,12 +1,11 @@
 import { useNavigation } from '@react-navigation/native'
-import { Avatar, Button, ListItem } from '@rneui/base'
+import { Button, Icon, ListItem } from '@rneui/base'
 import { Card } from '@rneui/themed'
 import { useContext } from 'react'
-import { Alert, FlatList } from 'react-native'
+import { Alert, FlatList, View } from 'react-native'
 
 import budgetContext from '../context/budgetContext'
 
-//import { fakeData } from '../fakeData/data'
 import moment from 'moment'
 import numeral from 'numeral'
 import { categorias } from '../utils/categoryList'
@@ -67,32 +66,28 @@ export default function MovementList({ navigation }: MovimentosProps) {
           />
         )}
       >
-        <Avatar
-          rounded
-          containerStyle={{
+        <View
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
             backgroundColor: !isFuture && categoriaInfo ? categoriaInfo.color : colorGenerator(),
-            opacity: isFuture ? 0.5 : 1, // 🔧 efeito visual para futuros
+            opacity: isFuture ? 0.5 : 1,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
-          size={48}
-          // 🔧 Se for futuro, mostra ícone de relógio. Caso contrário, mostra o ícone da categoria.
-          {...(isFuture
-            ? {
-              icon: {
-                name: 'schedule', // ícone de relógio
-                type: 'material', // biblioteca de ícones
-                color: 'white',
-                size: 48,
-              },
-            }
-            : {
-              icon: {
-                name: categoriaInfo ? categoriaInfo.icon : 'help-outline',
-                type: 'ionicon',
-                color: 'white',
-                size: 32,
-              },
-            })}
-        />
+        >
+          {isFuture ? (
+            <Icon name="schedule" type="material" color="white" size={32} />
+          ) : (
+            <Icon
+              name={categoriaInfo ? categoriaInfo.icon : 'help-outline'}
+              type="ionicon"
+              color="white"
+              size={32}
+            />
+          )}
+        </View>
         <ListItem.Content>
           <ListItem.Title
             style={{
