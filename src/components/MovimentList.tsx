@@ -1,22 +1,20 @@
-import { useNavigation } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 import { Button, Icon, ListItem } from '@rneui/base'
 import { Card } from '@rneui/themed'
 import { useContext } from 'react'
 import { Alert, FlatList, View } from 'react-native'
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
 
 import budgetContext from '../context/budgetContext'
+import type { Budget } from '../@types/budget'
 
 import moment from 'moment'
 import numeral from 'numeral'
 import { categorias } from '../utils/categoryList'
 import colorGenerator from '../utils/colorGenerator'
 
-interface MovimentosProps {
-  navigation?: any
-}
-
-export default function MovementList({ navigation }: MovimentosProps) {
-  navigation = useNavigation()
+export default function MovementList() {
+  const router = useRouter()
 
   const { movements, removeMovement } = useContext(budgetContext)
 
@@ -32,15 +30,26 @@ export default function MovementList({ navigation }: MovimentosProps) {
     ])
   }
 
-  const getItems = ({ item }) => {
-    // 🔧 converte Timestamp para Date se necessário
-    const data = item.data.toDate()
+  const getItems = ({ item }: { item: Budget }) => {
+    // 🔧 converte Timestamp para Date se necessário(é usada para a data futura)
+    const data =
+      item.data instanceof Date
+        ? item.data
+        : (item.data as FirebaseFirestoreTypes.Timestamp).toDate()
 
     // 🔧 verifica se a data é futura
     const isFuture = data > new Date()
 
     // 🔧 encontra a categoria correspondente no array de categorias
     const categoriaInfo = categorias.find((cat) => cat.value === item.categoria)
+
+    // Convert data to handle serialization(resolve passagem de parametros)
+    const serializedItem = {
+      ...item,
+      data: item.data instanceof Date
+        ? item.data.toISOString()
+        : item.data.toDate().toISOString(),
+    }
 
     return (
       <ListItem.Swipeable
@@ -49,7 +58,7 @@ export default function MovementList({ navigation }: MovimentosProps) {
         leftWidth={80}
         rightWidth={90}
         bottomDivider
-        onPress={() => navigation.navigate('myForm', item)}
+        onPress={() => router.push({ pathname: '/myForm', params: serializedItem })}
         rightContent={(reset) => (
           <Button
             containerStyle={{
@@ -138,7 +147,11 @@ export default function MovementList({ navigation }: MovimentosProps) {
         borderColor: '#006e61',
       }}
     >
-      <FlatList data={movements} keyExtractor={(item) => item.id} renderItem={getItems} />
+      <FlatList<Budget>
+        data={movements}
+        keyExtractor={(item) => item.id}
+        renderItem={getItems}
+      />
     </Card>
   )
 }

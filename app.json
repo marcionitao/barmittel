@@ -3,7 +3,13 @@
     "name": "barmittel",
     "slug": "barmittel",
     "version": "1.0.0",
-    "assetBundlePatterns": ["**/*"],
+    "scheme": "barmittel",
+    "web": {
+      "bundler": "metro"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
@@ -19,8 +25,7 @@
         "image": "./assets/images/splash.png",
         "resizeMode": "contain",
         "backgroundColor": "#f8b600"
-      },
-      "suportsTablet": true
+      }
     },
     "android": {
       "package": "com.barmittel",
@@ -30,11 +35,9 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "plugins": ["@react-native-firebase/app"]
+    "plugins": [
+      "@react-native-firebase/app",
+      "expo-router"
+    ]
   }
 }
-
-
-
-
-

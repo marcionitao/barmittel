@@ -1,22 +1,13 @@
 
-import { useNavigation, useRoute } from '@react-navigation/native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { StyleSheet, View } from 'react-native'
-import { en, registerTranslation } from 'react-native-paper-dates'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import MovementFuture from '../components/MovementFuture'
+import MovementFuture from '../src/components/MovementFuture'
 
-registerTranslation('EN', en)
-interface MovimentosProps {
-  route: any
-  navigation: any
-}
+const MyFuture = () => {
 
-const MyFuture = ({ route, navigation }: MovimentosProps) => {
-  route = useRoute()
-  navigation = useNavigation()
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
       <LinearGradient
         // Background Linear Gradient
         colors={['#F8B600', '#fff']}
@@ -33,6 +24,7 @@ const MyFuture = ({ route, navigation }: MovimentosProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F8B600',
   },
   listContainer: {
     flex: 1,

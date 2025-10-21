@@ -4,7 +4,8 @@ export type Budget = {
   categoria: string
   descricao: string
   movimentos: number
-  data: Date | firebase.firestore.Timestamp
+  // data: Date | firebase.firestore.Timestamp
+  data: Date | FirebaseFirestoreTypes.Timestamp
 }
 
 export type BudgetContextType = {

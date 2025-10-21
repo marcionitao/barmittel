@@ -1,18 +1,14 @@
 import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import MovementList from '../components/MovimentList'
-import NewFAB from '../components/NewFAB'
-import { useNavigation } from '@react-navigation/native'
 
 import { LinearGradient } from 'expo-linear-gradient'
 
-import BalanceMinimal from '../components/BalanceMinimal'
+import Grafico from '../src/components/Grafico'
+import BalanceMinimal from '../src/components/BalanceMinimal'
 
-const MyHome = () => {
-  const navigation = useNavigation()
-
+const MyCharts = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
       <LinearGradient
         // Background Linear Gradient
         colors={['#F8B600', '#fff']}
@@ -21,10 +17,10 @@ const MyHome = () => {
         <BalanceMinimal />
 
         <View style={styles.listContainer}>
-          <MovementList />
+          <Grafico />
         </View>
       </LinearGradient>
-      <NewFAB />
+      {/* <NewFAB /> */}
     </SafeAreaView>
   )
 }
@@ -32,6 +28,7 @@ const MyHome = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F8B600',
   },
   listContainer: {
     flex: 1,
@@ -41,4 +38,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default MyHome
+export default MyCharts

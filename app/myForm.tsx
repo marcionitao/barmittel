@@ -1,42 +1,68 @@
 import { firebase } from '@react-native-firebase/firestore'
 import { Picker } from '@react-native-picker/picker'
-import { useNavigation, useRoute } from '@react-navigation/native'
+// import { useNavigation, useRoute } from '@react-navigation/native'
+import { useRouter, useLocalSearchParams } from 'expo-router'
 import { Button, Card } from '@rneui/themed'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useContext, useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import CurrencyInput from 'react-native-currency-input'
-import { DatePickerInput, en, registerTranslation } from 'react-native-paper-dates'
+import { DatePickerInput, en, de, registerTranslation } from 'react-native-paper-dates'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import budgetContext from '../context/budgetContext'
-import { categorias } from '../utils/categoryList'
+import budgetContext from '../src/context/budgetContext'
+import { categorias } from '../src/utils/categoryList'
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
 
-registerTranslation('EN', en)
-interface MovimentosProps {
-  route: any
-  navigation: any
-}
+import type { Budget } from '../src/@types/budget'
 
-const MyForm = ({ route, navigation }: MovimentosProps) => {
-  route = useRoute()
-  navigation = useNavigation()
+// Register both English and German translations
+registerTranslation('en', en)
+registerTranslation('de', de)
+
+const MyForm = () => {
+  const router = useRouter()
+  const params = useLocalSearchParams() as Record<string, string>
 
   const { addMovement, updateMovement, keyboardVisible } = useContext(budgetContext)
 
-  const [carteira, setCarteira] = useState(route.params ? route.params : {})
+  // Convert params back to the correct format
+  const initialData = params ? {
+    id: params.id as string,
+    acao: params.acao as string,
+    categoria: params.categoria as string,
+    descricao: params.descricao as string,
+    movimentos: Number(params.movimentos),
+    data: params.data ? firebase.firestore.Timestamp.fromDate(new Date(params.data as string)) : null
+  } : {}
 
-  const [inputDate, setInputDate] = useState(new Date())
-  const [selectedAcao, setSelectedAcao] = useState(route.params.acao)
-  const [selectedCategoria, setSelectedCategoria] = useState('Selecione a Categoria')
-  const [value, setValue] = useState(0)
+  const [carteira, setCarteira] = useState<Partial<Budget>>(initialData)
+  const [inputDate, setInputDate] = useState(params.data ? new Date(params.data as string) : new Date())
+  const [selectedAcao, setSelectedAcao] = useState(params.acao as string || '')
+  const [selectedCategoria, setSelectedCategoria] = useState(params.categoria as string || 'Selecione a Categoria')
+  const [value, setValue] = useState(Number(params.movimentos) || 0)
+
+  const handleSave = () => {
+    // Create a new movement object with all required fields
+    const movimento: Budget = {
+      id: carteira.id || '', // Firebase will generate if new
+      acao: carteira.acao || selectedAcao,
+      categoria: carteira.categoria || selectedCategoria,
+      descricao: carteira.descricao || '',
+      movimentos: carteira.movimentos || value,
+      data: carteira.data || firestore.Timestamp.fromDate(inputDate)
+    }
+
+    if (carteira.id) {
+      updateMovement(movimento.id, movimento)
+    } else {
+      addMovement(movimento)
+    }
+    router.back()
+  }
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-      }}
-    >
-      <LinearGradient colors={['#F8B600', '#fff']}>
+    <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
+      <LinearGradient colors={['#F8B600', '#fff']} style={{ flex: 1 }}>
         <Card
           containerStyle={{
             borderTopStartRadius: 10,
@@ -49,15 +75,21 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
           <View style={styles.form}>
             <Text style={{ marginBottom: 2 }}>Data</Text>
             <DatePickerInput
-              locale='EN'
-              value={carteira.id !== undefined ? carteira.data.toDate() : inputDate}
+              locale='de'
+              value={
+                carteira.id !== undefined
+                  ? carteira.data instanceof Date
+                    ? carteira.data
+                    : (carteira.data as FirebaseFirestoreTypes.Timestamp).toDate()
+                  : inputDate
+              }
               style={{ backgroundColor: '#f6f6f6' }}
               onChange={(value) => {
+                if (!value) return
                 setInputDate(value)
                 setCarteira({
                   ...carteira,
-                  //data: value,
-                  data: firebase.firestore.Timestamp.fromDate(value),
+                  data: firestore.Timestamp.fromDate(value),
                 })
               }}
               inputMode='start'
@@ -65,7 +97,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
 
             <Text style={{ marginTop: 5, marginBottom: 2 }}>Movimento</Text>
             <CurrencyInput
-              value={carteira.id !== undefined ? carteira.movimentos : value}
+              value={carteira.id !== undefined ? Number(carteira.movimentos) : value}
               onChangeValue={(movimentos) => {
                 setValue(movimentos)
                 setCarteira({ ...carteira, movimentos })
@@ -100,14 +132,17 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
 
             <Text style={{ marginTop: 5, marginBottom: 2 }}>Categoria</Text>
             <Picker
-              selectedValue={carteira.id !== undefined ? carteira.categoria : selectedCategoria}
-              onValueChange={(categoria, itemIndex) => {
+              selectedValue={
+                typeof carteira.categoria === 'string'
+                  ? carteira.categoria
+                  : selectedCategoria
+              }
+              onValueChange={(categoria) => {
                 setSelectedCategoria(categoria)
                 setCarteira({ ...carteira, categoria })
               }}
-              style={{ backgroundColor: '#f6f6f6' }}
-              dropdownIconColor={'red'}
             >
+
               {categorias.map((categoria) => (
                 <Picker.Item
                   key={categoria.value}
@@ -126,11 +161,11 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
 
             <Text style={{ marginTop: 5, marginBottom: 2 }}>Descrição</Text>
             <TextInput
-              style={styles.input}
-              value={carteira.descricao}
+              value={typeof carteira.descricao === 'string' ? carteira.descricao : ''}
               onChangeText={(descricao) => setCarteira({ ...carteira, descricao })}
               placeholder='Descrição do Movimento'
             />
+
             {keyboardVisible ? null : (
               <View
                 style={{
@@ -154,7 +189,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
                     style={{ marginTop: 25, marginBottom: 15 }}
                     color='#f6f6f6'
                     onPress={() => {
-                      navigation.goBack()
+                      router.back()
                     }}
                   />
                 </View>
@@ -168,13 +203,7 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
                     title='Save'
                     style={{ marginTop: 25, marginBottom: 15 }}
                     color='#006e61'
-                    onPress={() => {
-
-                      carteira.id !== undefined
-                        ? updateMovement(carteira.id, carteira)
-                        : addMovement(carteira)
-                      navigation.goBack()
-                    }}
+                    onPress={handleSave}
                   />
                 </View>
               </View>
@@ -187,6 +216,10 @@ const MyForm = ({ route, navigation }: MovimentosProps) => {
 }
 // define styles for input
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8B600',
+  },
   form: {
     padding: 3,
     marginTop: 10,

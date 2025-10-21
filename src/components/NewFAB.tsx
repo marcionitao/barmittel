@@ -1,66 +1,64 @@
-import { useState } from 'react'
-
-import { useNavigation } from '@react-navigation/native'
-import { SpeedDial } from '@rneui/themed'
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { SpeedDial } from '@rneui/themed';
 
 const NewFAB = () => {
-  const [open, setOpen] = useState(false)
-
-  const navigation = useNavigation()
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const acao = (aAcao: string) => {
-    navigation.navigate('myForm', { acao: aAcao })
-  }
+    router.push({ pathname: '/myForm', params: { acao: aAcao } });
+  };
 
   return (
     <SpeedDial
-      color='#006E61'
+      color="#006E61"
       icon={{ name: 'add', color: '#fff' }}
       openIcon={{ name: 'close', color: '#fff' }}
       isOpen={open}
       onOpen={() => {
-        setOpen(!open)
+        setOpen(!open);
       }}
       onClose={() => setOpen(!open)}
     >
       <SpeedDial.Action
-        title='Grafico'
+        title="Grafico"
         icon={{ name: 'bar-chart', color: '#fff' }}
-        color='orange'
+        color="orange"
         onPress={() => {
-          navigation.navigate('myCharts', { acao: 'Grafico' })
-          setOpen(!open)
+          router.push({ pathname: '/myCharts', params: { acao: 'Grafico' } });
+          setOpen(!open);
         }}
       />
       <SpeedDial.Action
-        title='Itens Futuros'
+        title="Itens Futuros"
         icon={{ name: 'schedule', color: '#fff' }}
-        color='blue'
+        color="blue"
         onPress={() => {
-          navigation.navigate('mySchedule', { acao: 'Itens Futuros' })
-          setOpen(!open)
+          router.push({ pathname: '/mySchedule', params: { acao: 'Itens Futuros' } });
+          setOpen(!open);
         }}
       />
       <SpeedDial.Action
-        title='Receita'
+        title="Receita"
         icon={{ name: 'arrow-upward', color: '#fff' }}
-        color='green'
+        color="green"
         onPress={() => {
-          acao('Receita')
-          setOpen(!open)
+          acao('Receita');
+          setOpen(!open);
         }}
       />
       <SpeedDial.Action
-        title='Despesa'
+        title="Despesa"
         icon={{ name: 'arrow-downward', color: '#fff' }}
-        color='red'
+        color="red"
         onPress={() => {
-          acao('Despesa')
-          setOpen(!open)
+          acao('Despesa');
+          setOpen(!open);
         }}
       />
     </SpeedDial>
-  )
-}
+  );
+};
 
-export default NewFAB
+export default NewFAB;

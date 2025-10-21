@@ -1,21 +1,21 @@
-import { useNavigation } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 import { Button, Icon, ListItem } from '@rneui/base'
 import { Card } from '@rneui/themed'
 import { useContext } from 'react'
 import { Alert, FlatList, Text, View } from 'react-native'
 
 import budgetContext from '../context/budgetContext'
+import type { Budget } from '../@types/budget'
+
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
 
 import moment from 'moment'
 import numeral from 'numeral'
 import colorGenerator from '../utils/colorGenerator'
 
-interface MovementFutureProps {
-  navigation?: any
-}
+export default function MovementFuture() {
 
-export default function MovementFuture({ navigation }: MovementFutureProps) {
-  navigation = useNavigation()
+  const router = useRouter()
 
   const { removeMovement, movimentosFuturos } = useContext(budgetContext)
 
@@ -53,12 +53,23 @@ export default function MovementFuture({ navigation }: MovementFutureProps) {
     ])
   }
 
-  const getItems = ({ item }) => {
-    // 🔧 converte Timestamp para Date se necessário
-    const data = item.data.toDate()
+  const getItems = ({ item }: { item: Budget }) => {
+    // 🔧 converte Timestamp para Date se necessário(é usada para a data futura)
+    const data =
+      item.data instanceof Date
+        ? item.data
+        : (item.data as FirebaseFirestoreTypes.Timestamp).toDate()
 
     // 🔧 verifica se a data é futura
     const isFuture = data > new Date()
+
+    // Convert data to handle serialization(resolve passagem de parametros)
+    const serializedItem = {
+      ...item,
+      data: item.data instanceof Date
+        ? item.data.toISOString()
+        : item.data.toDate().toISOString(),
+    }
 
     return (
       <ListItem.Swipeable
@@ -67,7 +78,7 @@ export default function MovementFuture({ navigation }: MovementFutureProps) {
         leftWidth={80}
         rightWidth={90}
         bottomDivider
-        onPress={() => navigation.navigate('myForm', item)}
+        onPress={() => router.push({ pathname: '/myForm', params: serializedItem })}
         rightContent={(reset) => (
           <Button
             containerStyle={{
