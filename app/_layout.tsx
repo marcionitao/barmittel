@@ -26,16 +26,6 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
-          name='mySchedule'
-          options={{
-            title: 'Movimentos Agendados',
-            headerShown: true,
-            headerTitleAlign: 'center',
-            headerStyle: { backgroundColor: '#F8B600' },
-            headerShadowVisible: false,
-          }}
-        />
-        <Stack.Screen
           name="myCharts"
           options={{
             title: 'Gráficos',

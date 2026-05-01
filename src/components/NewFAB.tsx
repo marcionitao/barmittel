@@ -35,7 +35,7 @@ const NewFAB = () => {
         icon={{ name: 'schedule', color: '#fff' }}
         color="blue"
         onPress={() => {
-          router.push({ pathname: '/mySchedule', params: { acao: 'Itens Futuros' } });
+          router.push({ pathname: '/myFuture', params: { acao: 'Itens Futuros' } });
           setOpen(!open);
         }}
       />

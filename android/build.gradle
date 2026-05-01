@@ -16,7 +16,7 @@ buildscript {
         FLIPPER_VERSION = "0.182.0"
 
         // From user's plan
-        firebaseBomVersion = "32.7.0"
+        firebaseBomVersion = "32.7.1"
         playServicesAuthVersion = "20.7.0"
     }
     repositories {

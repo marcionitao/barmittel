@@ -99,8 +99,8 @@ const MyForm = () => {
             <CurrencyInput
               value={carteira.id !== undefined ? Number(carteira.movimentos) : value}
               onChangeValue={(movimentos) => {
-                setValue(movimentos)
-                setCarteira({ ...carteira, movimentos })
+                setValue(movimentos || 0)
+                setCarteira({ ...carteira, movimentos: movimentos ?? undefined })
               }}
               style={[
                 styles.inputCurrency,
