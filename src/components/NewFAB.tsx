@@ -24,7 +24,7 @@ const NewFAB = () => {
       <SpeedDial.Action
         title="Grafico"
         icon={{ name: 'bar-chart', color: '#fff' }}
-        color="orange"
+        color="gray"
         onPress={() => {
           router.push({ pathname: '/myCharts', params: { acao: 'Grafico' } });
           setOpen(!open);
@@ -36,6 +36,15 @@ const NewFAB = () => {
         color="blue"
         onPress={() => {
           router.push({ pathname: '/myFuture', params: { acao: 'Itens Futuros' } });
+          setOpen(!open);
+        }}
+      />
+      <SpeedDial.Action
+        title="Investimento"
+        icon={{ name: 'currency-exchange', color: '#fff' }}
+        color="orange"
+        onPress={() => {
+          acao('Investimento');
           setOpen(!open);
         }}
       />

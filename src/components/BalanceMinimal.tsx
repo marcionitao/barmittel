@@ -11,11 +11,11 @@ import MonthPicker from 'react-native-month-year-picker'
 export default function BalanceMinimal() {
   const [show, setShow] = useState(false)
 
-  const onChange = (event, newDate) => {
+  const onChange = (event: string, newDate?: Date) => {
     setShow(false)
     if (event === 'neutralAction') {
       handleCurrentMonth()
-    } else if (event === 'dateSetAction') {
+    } else if (event === 'dateSetAction' && newDate) {
       setCurrentMonth(newDate)
     }
   }
@@ -24,6 +24,7 @@ export default function BalanceMinimal() {
     saldo,
     despesa,
     receita,
+    investimento,
     currentMonth,
     setCurrentMonth,
     handlePreviousMonth,
@@ -42,87 +43,98 @@ export default function BalanceMinimal() {
     ])
   }
   // 👇 se ainda não tem dados, exibe skeleton
-  const isLoading = saldo === 0 && receita === 0 && despesa === 0
-
+  const isLoading = saldo === 0 && receita === 0 && despesa === 0 && investimento === 0
 
   return (
     <Card
       containerStyle={{
-        borderTopStartRadius: 10,
-        borderTopEndRadius: 10,
+        borderRadius: 15,
         borderColor: '#006e61',
+        padding: 15,
+        elevation: 3,
       }}
     >
+      {/* --- Seção Saldo Atual (Destaque) --- */}
+      <View style={{ alignItems: 'center', marginBottom: 20 }}>
+        <Text style={{ fontSize: 14, color: '#666', textTransform: 'uppercase', letterSpacing: 1 }}>
+          Saldo Atual
+        </Text>
+        {isLoading ? (
+          <Skeleton width={180} height={45} style={{ marginTop: 5 }} animation='wave' />
+        ) : (
+          <Text style={{ fontSize: 36, fontWeight: 'bold', color: '#222' }}>
+            {numeral(saldo).format('0,0.00')}€
+          </Text>
+        )}
+      </View>
+
+      {/* --- Seção Detalhes (Receita | Despesa | Investimento) --- */}
       <View
         style={{
-          width: '100%',
-          marginTop: 2,
-          alignItems: 'center',
           flexDirection: 'row',
-          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingVertical: 10,
+          borderTopWidth: 0.5,
+          borderColor: '#eee',
         }}
       >
-        <View style={{ width: '50%', padding: 1 }}>
-          <View
-            style={{
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-            }}
-          >
-            <Text style={{ fontSize: 15 }}>Saldo Atual</Text>
-            {isLoading ? (
-              <Skeleton width={100} height={30} style={{ marginLeft: 10 }} animation="wave" />
-            ) : (
-              <Text style={{ fontSize: 30 }}>
-                {numeral(saldo).format('0,0.00')}€
-              </Text>
-            )}
+        {/* Receita */}
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+            <Image
+              style={{ height: 14, width: 14, marginRight: 4 }}
+              source={require('../../assets/images/up.png')}
+            />
+            <Text style={{ fontSize: 11, color: '#666' }}>Receita</Text>
           </View>
+          {isLoading ? (
+            <Skeleton width={70} height={20} />
+          ) : (
+            <Text style={{ fontSize: 16, fontWeight: '600', color: 'green' }}>
+              {numeral(receita).format('0,0.00')}€
+            </Text>
+          )}
         </View>
 
-        <View style={{ width: '50%', padding: 2 }}>
-          <View
-            style={{
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-            }}
-          >
-            {isLoading ? (
-              // bloco receita skeleton
-              <Skeleton width={120} height={30} animation="wave" />
-            ) : (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image
-                  style={{ height: 30, width: 30, resizeMode: 'contain', marginRight: 5 }}
-                  source={require('../../assets/images/up.png')}
-                />
-                <Text style={{ fontSize: 25, color: 'green' }}>
-                  {numeral(receita).format('0,0.00')}€
-                </Text>
-              </View>
-            )}
+        <View style={{ width: 1, height: 30, backgroundColor: '#ddd' }} />
 
-            {isLoading ? (
-              // bloco despesa skeleton
-              <Skeleton width={120} height={30} animation="wave" />
-            ) : (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image
-                  style={{ height: 30, width: 30, resizeMode: 'contain', marginRight: 5 }}
-                  source={require('../../assets/images/down.png')}
-                />
-                <Text style={{ fontSize: 25, color: 'red' }}>
-                  {numeral(despesa).format('0,0.00')}€
-                </Text>
-              </View>
-            )}
+        {/* Despesa */}
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+            <Image
+              style={{ height: 14, width: 14, marginRight: 4 }}
+              source={require('../../assets/images/down.png')}
+            />
+            <Text style={{ fontSize: 11, color: '#666' }}>Despesa</Text>
           </View>
+          {isLoading ? (
+            <Skeleton width={70} height={20} />
+          ) : (
+            <Text style={{ fontSize: 16, fontWeight: '600', color: 'red' }}>
+              {numeral(despesa).format('0,0.00')}€
+            </Text>
+          )}
+        </View>
+
+        <View style={{ width: 1, height: 30, backgroundColor: '#ddd' }} />
+
+        {/* Investimento */}
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+            <Image
+              style={{ height: 14, width: 14, marginRight: 4 }}
+              source={require('../../assets/images/stock.png')}
+            />
+            <Text style={{ fontSize: 11, color: '#666' }}>Investimento</Text>
+          </View>
+          {isLoading ? (
+            <Skeleton width={70} height={20} />
+          ) : (
+            <Text style={{ fontSize: 16, fontWeight: '600', color: 'orange' }}>
+              {numeral(investimento).format('0,0.00')}€
+            </Text>
+          )}
         </View>
       </View>
 
@@ -138,12 +150,7 @@ export default function BalanceMinimal() {
       >
         <View style={{ width: '10%', padding: 2 }}>
           <TouchableOpacity onPress={handlePreviousMonth}>
-            <Icon
-              name='skip-previous'
-              type='MaterialCommunityIcons'
-              color='gray'
-              size={32}
-            />
+            <Icon name='skip-previous' type='MaterialCommunityIcons' color='gray' size={32} />
           </TouchableOpacity>
         </View>
         <View style={{ width: '80%', padding: 5 }}>
@@ -159,9 +166,9 @@ export default function BalanceMinimal() {
               minimumDate={new Date(2019, 0, 1)}
               maximumDate={new Date()}
               locale='en'
-              okButton="OK"
-              cancelButton="Cancel"
-              neutralButton="Hoje"
+              okButton='OK'
+              cancelButton='Cancel'
+              neutralButton='Hoje'
             />
           )}
         </View>
@@ -171,12 +178,7 @@ export default function BalanceMinimal() {
               todayMes <= appDate ? avisoMes() : handleNextMonth()
             }}
           >
-            <Icon
-              name='skip-next'
-              type='MaterialCommunityIcons'
-              color='gray'
-              size={32}
-            />
+            <Icon name='skip-next' type='MaterialCommunityIcons' color='gray' size={32} />
           </TouchableOpacity>
         </View>
       </View>

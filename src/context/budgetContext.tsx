@@ -9,6 +9,7 @@ export const BudgetContext = createContext<BudgetContextType>({
   saldo: 0,
   despesa: 0,
   receita: 0,
+  investimento: 0,
   keyboardVisible: false,
   currentMonth: new Date(),
   addMovement: () => { },
@@ -22,12 +23,13 @@ export const BudgetContext = createContext<BudgetContextType>({
 })
 
 // create provider
-export const BudgetProvider = ({ children }) => {
+export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
   // state
   const [movements, setMovements] = useState<Budget[]>([])
   const [saldo, setSaldo] = useState(0)
   const [receita, setReceita] = useState(0)
   const [despesa, setDespesa] = useState(0)
+  const [investimento, setInvestimento] = useState(0)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [keyboardVisible, setKeyboardVisible] = useState(false)
 
@@ -83,6 +85,7 @@ export const BudgetProvider = ({ children }) => {
       .onSnapshot((querySnapshot) => {
         let despesa = 0
         let receita = 0
+        let investimento = 0
 
         const allMovements = querySnapshot.docs.map((doc) => {
           const data = doc.data()
@@ -101,15 +104,19 @@ export const BudgetProvider = ({ children }) => {
               despesa += movement.movimentos
             } else if (movement.acao === 'Receita') {
               receita += movement.movimentos
+            } else if (movement.acao === 'Investimento') {
+              investimento += movement.movimentos
             }
           }
         })
 
-        const saldo = receita - despesa
+        const saldo = receita - despesa - investimento
+
 
         setMovements(allMovements)
         setReceita(receita)
         setDespesa(despesa)
+        setInvestimento(investimento)
         setSaldo(saldo)
       }, (error) => {
         console.log('Erro no listener:', error)
@@ -210,6 +217,7 @@ export const BudgetProvider = ({ children }) => {
         saldo,
         receita,
         despesa,
+        investimento,
         keyboardVisible,
         currentMonth,
         setCurrentMonth,

@@ -18,5 +18,6 @@ export const categorias = [
   { label: 'LAZER', value: 'LAZER', icon: 'game-controller-outline', color: '#f7b6d2' },   // rosa bebê
   { label: 'PREMIO', value: 'PREMIO', icon: 'trophy-outline', color: '#dbdb8d' },          // amarelo fosco
   { label: 'DROGARIA', value: 'DROGARIA', icon: 'medkit-outline', color: '#9edae5' },      // ciano claro
+  { label: 'INVESTIMENTOS', value: 'INVESTIMENTOS', icon: 'trending-up-outline', color: '#3cb44b' }, // verde investimento
   { label: 'GASOLINA', value: 'GASOLINA', icon: 'car-sport-outline', color: '#393b79' }    // azul escuro
 ]

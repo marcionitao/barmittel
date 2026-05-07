@@ -18,6 +18,8 @@ Barmittel is a personal finance control app built with React Native, designed to
 * **Firebase:** Used for backend services like Firestore for data storage.
 * **ESLint and Prettier:** For code linting and formatting.
 
+## Getting Started
+
 ### Prerequisites
 
 * Node.js
@@ -67,3 +69,38 @@ Barmittel is a personal finance control app built with React Native, designed to
 * `npm run web`: Runs the app in a web browser.
 * `npm run lint`: Lints the code using ESLint.
 * `npm run format`: Formats the code using Prettier.
+
+## Project Structure
+
+```
+- /src
+  - /components
+    - Balance.tsx
+    - BalanceMinimal.tsx
+    - Grafico.tsx
+    - MovementFuture.tsx
+    - MovimentList.tsx
+    - NewFAB.tsx
+  - /context
+    - budgetContext.tsx
+  - /fakeData
+    - data.ts
+  - /utils
+    - categoryList.ts
+    - colorGenerator.ts
+```
+
+## Contributing
+
+Contributions are welcome! Please follow these steps to contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add some feature'`).
+5. Push to the branch (`git push origin feature/your-feature`).
+6. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License.

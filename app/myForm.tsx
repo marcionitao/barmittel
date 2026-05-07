@@ -23,22 +23,36 @@ const MyForm = () => {
   const router = useRouter()
   const params = useLocalSearchParams() as Record<string, string>
 
+  const colors = {
+    Receita: 'green',
+    Despesa: 'red',
+    Investimento: 'orange',
+  }
+
   const { addMovement, updateMovement, keyboardVisible } = useContext(budgetContext)
 
   // Convert params back to the correct format
-  const initialData = params ? {
-    id: params.id as string,
-    acao: params.acao as string,
-    categoria: params.categoria as string,
-    descricao: params.descricao as string,
-    movimentos: Number(params.movimentos),
-    data: params.data ? firebase.firestore.Timestamp.fromDate(new Date(params.data as string)) : null
-  } : {}
+  const initialData = params
+    ? {
+      id: params.id as string,
+      acao: params.acao as string,
+      categoria: params.categoria as string,
+      descricao: params.descricao as string,
+      movimentos: Number(params.movimentos),
+      data: params.data
+        ? firebase.firestore.Timestamp.fromDate(new Date(params.data as string))
+        : null,
+    }
+    : {}
 
   const [carteira, setCarteira] = useState<Partial<Budget>>(initialData)
-  const [inputDate, setInputDate] = useState(params.data ? new Date(params.data as string) : new Date())
-  const [selectedAcao, setSelectedAcao] = useState(params.acao as string || '')
-  const [selectedCategoria, setSelectedCategoria] = useState(params.categoria as string || 'Selecione a Categoria')
+  const [inputDate, setInputDate] = useState(
+    params.data ? new Date(params.data as string) : new Date(),
+  )
+  const [selectedAcao, setSelectedAcao] = useState((params.acao as string) || '')
+  const [selectedCategoria, setSelectedCategoria] = useState(
+    (params.categoria as string) || 'Selecione a Categoria',
+  )
   const [value, setValue] = useState(Number(params.movimentos) || 0)
 
   const handleSave = () => {
@@ -49,7 +63,7 @@ const MyForm = () => {
       categoria: carteira.categoria || selectedCategoria,
       descricao: carteira.descricao || '',
       movimentos: carteira.movimentos || value,
-      data: carteira.data || firestore.Timestamp.fromDate(inputDate)
+      data: carteira.data || firestore.Timestamp.fromDate(inputDate),
     }
 
     if (carteira.id) {
@@ -104,7 +118,15 @@ const MyForm = () => {
               }}
               style={[
                 styles.inputCurrency,
-                { color: carteira.acao === 'Receita' ? 'green' : 'red', textAlign: 'center' },
+                {
+                  color:
+                    carteira.acao === 'Receita'
+                      ? 'green'
+                      : carteira.acao === 'Investimento'
+                        ? 'orange'
+                        : 'red',
+                  textAlign: 'center',
+                },
               ]}
               suffix='€'
               autoFocus={carteira.id !== undefined ? false : true}
@@ -128,21 +150,24 @@ const MyForm = () => {
             >
               <Picker.Item label='Receita' value='Receita' color='green' style={{ fontSize: 16 }} />
               <Picker.Item label='Despesa' value='Despesa' color='red' style={{ fontSize: 16 }} />
+              <Picker.Item
+                label='Investimento'
+                value='Investimento'
+                color='orange'
+                style={{ fontSize: 16 }}
+              />
             </Picker>
 
             <Text style={{ marginTop: 5, marginBottom: 2 }}>Categoria</Text>
             <Picker
               selectedValue={
-                typeof carteira.categoria === 'string'
-                  ? carteira.categoria
-                  : selectedCategoria
+                typeof carteira.categoria === 'string' ? carteira.categoria : selectedCategoria
               }
               onValueChange={(categoria) => {
                 setSelectedCategoria(categoria)
                 setCarteira({ ...carteira, categoria })
               }}
             >
-
               {categorias.map((categoria) => (
                 <Picker.Item
                   key={categoria.value}

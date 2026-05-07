@@ -12,14 +12,14 @@ export default function Balance() {
   // inicio: bloco data escolher mes/ano
   const [show, setShow] = useState(false);
 
-  const onChange = (event, newDate) => {
-    setShow(false);
+  const onChange = (event: string, newDate?: Date) => {
+    setShow(false)
     if (event === 'neutralAction') {
-      handleCurrentMonth(); // volta para o mês atual do sistema
-    } else if (event === 'dateSetAction') {
-      setCurrentMonth(newDate);
+      handleCurrentMonth()
+    } else if (event === 'dateSetAction' && newDate) {
+      setCurrentMonth(newDate)
     }
-  };
+  }
   // fim: bloco data escolher mes/ano
 
   const {

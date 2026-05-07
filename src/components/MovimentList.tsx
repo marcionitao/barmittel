@@ -126,7 +126,9 @@ export default function MovementList() {
               ? '#6c757d' // 🔧 Cor especial para valores futuros
               : item.acao === 'Despesa'
                 ? 'red'
-                : 'green',
+                : item.acao === 'Investimento'
+                  ? 'orange'
+                  : 'green',
             fontWeight: 'bold',
             fontSize: 17,
             alignSelf: 'flex-start',
