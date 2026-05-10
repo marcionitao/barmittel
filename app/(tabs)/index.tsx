@@ -1,15 +1,10 @@
 import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MovementList from '../../src/components/MovimentList'
-// import NewFAB from '../src/components/NewFAB'
-import { useRouter } from 'expo-router'
-
 import { LinearGradient } from 'expo-linear-gradient'
-
-import BalanceMinimal from '../../src/components/BalanceMinimal'
+import BalanceMinimal from '../../src/components/finance/BalanceMinimal'
 
 const Index = () => {
-  const router = useRouter()
 
   return (
     <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>

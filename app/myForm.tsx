@@ -1,6 +1,5 @@
 import { firebase } from '@react-native-firebase/firestore'
 import { Picker } from '@react-native-picker/picker'
-// import { useNavigation, useRoute } from '@react-navigation/native'
 import { useRouter, useLocalSearchParams } from 'expo-router'
 import { Button, Card } from '@rneui/themed'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -44,7 +43,6 @@ const MyForm = () => {
   const [inputDate, setInputDate] = useState(
     params.data ? new Date(params.data as string) : new Date(),
   )
-  // const [selectedAcao, setSelectedAcao] = useState((params.acao as string) || '')
 
   const [selectedCategoria, setSelectedCategoria] = useState(
     (params.categoria as string) || 'Selecione a Categoria',

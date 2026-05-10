@@ -1,7 +1,5 @@
 import { Tabs } from 'expo-router'
-// import { MaterialIcons } from '@expo/vector-icons'
 import { Feather } from '@expo/vector-icons'
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { TouchableOpacity, View } from 'react-native'
 import { useState } from 'react'
 import CreateMovementModal from '../../src/components/CreateMovementModal'

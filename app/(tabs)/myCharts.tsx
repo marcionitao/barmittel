@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
 
 import Grafico from '../../src/components/Grafico'
-import BalanceMinimal from '../../src/components/BalanceMinimal'
+import BalanceMinimal from '../../src/components/finance/BalanceMinimal'
 
 const MyCharts = () => {
   return (
