@@ -1,10 +1,15 @@
-
-import { LinearGradient } from 'expo-linear-gradient'
 import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import MovementFuture from '../src/components/MovementFuture'
+import MovementList from '../../src/components/MovimentList'
+// import NewFAB from '../src/components/NewFAB'
+import { useRouter } from 'expo-router'
 
-const MyFuture = () => {
+import { LinearGradient } from 'expo-linear-gradient'
+
+import BalanceMinimal from '../../src/components/BalanceMinimal'
+
+const Index = () => {
+  const router = useRouter()
 
   return (
     <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
@@ -13,10 +18,13 @@ const MyFuture = () => {
         colors={['#F8B600', '#fff']}
         style={styles.container}
       >
+        <BalanceMinimal />
+
         <View style={styles.listContainer}>
-          <MovementFuture />
+          <MovementList />
         </View>
       </LinearGradient>
+      {/* <NewFAB /> */}
     </SafeAreaView>
   )
 }
@@ -34,4 +42,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default MyFuture
+export default Index

@@ -23,12 +23,6 @@ const MyForm = () => {
   const router = useRouter()
   const params = useLocalSearchParams() as Record<string, string>
 
-  const colors = {
-    Receita: 'green',
-    Despesa: 'red',
-    Investimento: 'orange',
-  }
-
   const { addMovement, updateMovement, keyboardVisible } = useContext(budgetContext)
 
   // Convert params back to the correct format
@@ -44,12 +38,14 @@ const MyForm = () => {
         : null,
     }
     : {}
-
+  const initialAcao = (params.acao as string) || 'Despesa'
+  const [selectedAcao, setSelectedAcao] = useState(initialAcao)
   const [carteira, setCarteira] = useState<Partial<Budget>>(initialData)
   const [inputDate, setInputDate] = useState(
     params.data ? new Date(params.data as string) : new Date(),
   )
-  const [selectedAcao, setSelectedAcao] = useState((params.acao as string) || '')
+  // const [selectedAcao, setSelectedAcao] = useState((params.acao as string) || '')
+
   const [selectedCategoria, setSelectedCategoria] = useState(
     (params.categoria as string) || 'Selecione a Categoria',
   )

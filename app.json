@@ -2,7 +2,7 @@
   "expo": {
     "name": "barmittel",
     "slug": "barmittel",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "scheme": "barmittel",
     "web": {
       "bundler": "metro"
@@ -11,7 +11,7 @@
       "**/*"
     ],
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon_3.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
