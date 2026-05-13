@@ -1,11 +1,6 @@
 import { Icon } from '@rneui/themed'
 import { useState } from 'react'
-import {
-  Alert,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { Alert, Text, TouchableOpacity, View } from 'react-native'
 
 import MonthPicker from 'react-native-month-year-picker'
 import moment from 'moment'
@@ -18,6 +13,7 @@ type Props = {
   handleCurrentMonth: () => void
 }
 
+// Responsável por: picker, currentMonth, previous/next, validação mês futuro
 export default function MonthNavigator({
   currentMonth,
   setCurrentMonth,
@@ -38,25 +34,14 @@ export default function MonthNavigator({
   }
 
   const today = new Date()
-  const current = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    1,
-  )
+  const current = new Date(today.getFullYear(), today.getMonth(), 1)
 
-  const selected = new Date(
-    currentMonth.getFullYear(),
-    currentMonth.getMonth(),
-    1,
-  )
+  const selected = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
 
   const isCurrentMonth = selected >= current
 
   const showAlert = () => {
-    Alert.alert(
-      'Sorry!',
-      "There aren't datas from next month!",
-    )
+    Alert.alert('Sorry!', "There aren't datas from next month!")
   }
 
   return (
@@ -68,23 +53,16 @@ export default function MonthNavigator({
       }}
     >
       <TouchableOpacity onPress={handlePreviousMonth}>
-        <Icon
-          name="chevron-back"
-          type="ionicon"
-          color="gray"
-          size={26}
-        />
+        <Icon name='chevron-back' type='ionicon' color='gray' size={26} />
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{ flex: 1 }}
-        onPress={() => setShow(true)}
-      >
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => setShow(true)}>
         <Text
           style={{
             textAlign: 'center',
-            fontSize: 16,
+            fontSize: 17,
             fontWeight: '600',
+            letterSpacing: 0.3
           }}
         >
           {moment(currentMonth).format('MMMM YYYY')}
@@ -98,9 +76,9 @@ export default function MonthNavigator({
         }}
       >
         <Icon
-          name="chevron-forward"
-          type="ionicon"
-          color={isCurrentMonth ? '#ccc' : 'gray'}
+          name='chevron-forward'
+          type='ionicon'
+          color={isCurrentMonth ? '#ccc' : '#555'}
           size={26}
         />
       </TouchableOpacity>
@@ -111,7 +89,7 @@ export default function MonthNavigator({
           value={currentMonth}
           minimumDate={new Date(2019, 0, 1)}
           maximumDate={today}
-          locale="en"
+          locale='en'
           okButton='OK'
           cancelButton='Cancel'
           neutralButton='Hoje'

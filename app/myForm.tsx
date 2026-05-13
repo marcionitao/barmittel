@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import budgetContext from '../src/context/budgetContext'
 import { categorias } from '../src/utils/categoryList'
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
+import { useRef, useEffect } from 'react'
 
 import type { Budget } from '../src/@types/budget'
 
@@ -19,6 +20,17 @@ registerTranslation('en', en)
 registerTranslation('de', de)
 
 const MyForm = () => {
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      movementRef.current?.focus?.()
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+
+  const movementRef = useRef<any>(null)
   const router = useRouter()
   const params = useLocalSearchParams() as Record<string, string>
 
@@ -105,6 +117,7 @@ const MyForm = () => {
 
             <Text style={{ marginTop: 5, marginBottom: 2 }}>Movimento</Text>
             <CurrencyInput
+              ref={movementRef}
               value={carteira.id !== undefined ? Number(carteira.movimentos) : value}
               onChangeValue={(movimentos) => {
                 setValue(movimentos || 0)
@@ -127,6 +140,7 @@ const MyForm = () => {
               separator='.'
               precision={2}
               minValue={0}
+              keyboardType="numeric"
             // onChangeText={(movimentos) => {
             //   console.log(movimentos)
             // }}

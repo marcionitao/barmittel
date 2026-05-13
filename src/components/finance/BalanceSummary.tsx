@@ -11,6 +11,7 @@ type Props = {
   isLoading: boolean
 }
 
+// Responsável por: saldo, receita, despesa, investimento
 export default function BalanceSummary({
   saldo,
   receita,
@@ -37,11 +38,7 @@ export default function BalanceSummary({
         </Text>
 
         {isLoading ? (
-          <Skeleton
-            width={180}
-            height={45}
-            style={{ marginTop: 5 }}
-          />
+          <Skeleton width={180} height={45} style={{ marginTop: 5 }} />
         ) : (
           <Text
             style={{
@@ -62,9 +59,9 @@ export default function BalanceSummary({
         }}
       >
         <FinancialStat
-          label="Receita"
+          label='Receita'
           value={receita}
-          color="green"
+          color='green'
           icon={require('../../../assets/images/up.png')}
           isLoading={isLoading}
         />
@@ -78,9 +75,9 @@ export default function BalanceSummary({
         />
 
         <FinancialStat
-          label="Despesa"
+          label='Despesa'
           value={despesa}
-          color="red"
+          color='red'
           icon={require('../../../assets/images/down.png')}
           isLoading={isLoading}
         />
@@ -94,9 +91,9 @@ export default function BalanceSummary({
         />
 
         <FinancialStat
-          label="Investimento"
+          label='Investimento'
           value={investimento}
-          color="orange"
+          color='orange'
           icon={require('../../../assets/images/stock.png')}
           isLoading={isLoading}
         />

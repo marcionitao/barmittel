@@ -6,6 +6,7 @@ import budgetContext from '../../context/budgetContext'
 import BalanceSummary from './BalanceSummary'
 import MonthNavigator from './MonthNavigator'
 
+// Responsavel Apenas pela composição/layout.
 export default function BalanceMinimal() {
   const {
     saldo,
@@ -19,11 +20,7 @@ export default function BalanceMinimal() {
     handleCurrentMonth,
   } = useContext(budgetContext)
 
-  const isLoading =
-    saldo === 0 &&
-    receita === 0 &&
-    despesa === 0 &&
-    investimento === 0
+  const isLoading = saldo === 0 && receita === 0 && despesa === 0 && investimento === 0
 
   return (
     <Card

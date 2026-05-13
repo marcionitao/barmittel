@@ -50,7 +50,7 @@ export default function TabsLayout() {
           options={{
             title: 'Charts',
 
-            headerTitle: 'Gráficos',
+            headerTitle: 'Gráfico',
 
             tabBarIcon: ({ color, size }) => (
               <Feather name="bar-chart-2" size={size} color={color} />
