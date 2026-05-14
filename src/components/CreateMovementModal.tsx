@@ -16,12 +16,14 @@ export default function CreateMovementModal({
   const navigateToForm = (acao: string) => {
     onClose()
 
-    router.push({
-      pathname: '/myForm',
-      params: {
-        acao,
-      },
-    })
+    setTimeout(() => {
+      router.push({
+        pathname: '/myForm',
+        params: {
+          acao,
+        },
+      })
+    }, 300)
   }
 
   return (
