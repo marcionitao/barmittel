@@ -58,4 +58,4 @@ dist/
 # Files
 TODO
 
-.env
+.env.local
