@@ -57,3 +57,5 @@ dist/
 
 # Files
 TODO
+
+.env

@@ -3,10 +3,13 @@ import { Feather } from '@expo/vector-icons'
 import { TouchableOpacity, View } from 'react-native'
 import { useState } from 'react'
 import CreateMovementModal from '../../src/components/CreateMovementModal'
+import { AssistantFAB } from '../../src/components/assistant/AssistantFAB'
+import { AssistantModal } from '../../src/components/assistant/AssistantModal'
 
 export default function TabsLayout() {
 
   const [modalVisible, setModalVisible] = useState(false)
+  const [assistantVisible, setAssistantVisible] = useState(false)
 
   return (
     <>
@@ -127,6 +130,11 @@ export default function TabsLayout() {
       <CreateMovementModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+      />
+      <AssistantFAB onPress={() => setAssistantVisible(true)} />
+      <AssistantModal
+        visible={assistantVisible}
+        onClose={() => setAssistantVisible(false)}
       />
     </>
   )

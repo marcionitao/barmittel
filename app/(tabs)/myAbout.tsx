@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
 
 
-const version = '1.1.1'
+const version = '1.2.0'
 
 const FEATURES = [
   {
@@ -25,6 +25,11 @@ const FEATURES = [
     title: 'Interface Moderna',
     description: 'Uma interface limpa e intuitiva.',
     icon: '✨',
+  },
+  {
+    title: 'IA Assistente',
+    description: 'Um Chat Bot inteligente para ajudar a gerir as tuas finanças.',
+    icon: '🤖',
   },
 ]
 
