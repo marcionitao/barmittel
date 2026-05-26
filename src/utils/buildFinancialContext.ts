@@ -68,33 +68,50 @@ function buildHistorySummary(history: MonthSnapshot[]): string {
 }
 
 function buildCategoryTrend(history: MonthSnapshot[]): string {
-  if (history.length < 2) return 'Histórico insuficiente para tendências.'
+  if (history.length < 2) return 'Histórico insuficiente.'
 
-  const allCategories = new Set<string>()
-  history.forEach((snap) =>
-    snap.movements
-      .filter((m) => m.acao === 'Despesa')
-      .forEach((m) => allCategories.add(m.categoria))
-  )
+  const current = history[history.length - 1]
+  const previous = history[history.length - 2]
 
-  const lines: string[] = []
+  const allCategories = new Set<string>([
+    ...current.movements.filter((m) => m.acao === 'Despesa').map((m) => m.categoria),
+    ...previous.movements.filter((m) => m.acao === 'Despesa').map((m) => m.categoria),
+  ])
+
+  const aumentaram: string[] = []
+  const diminuiram: string[] = []
+  const iguais: string[] = []
 
   allCategories.forEach((cat) => {
-    const vals = history.map((snap) => {
-      const total = snap.movements
-        .filter((m) => m.acao === 'Despesa' && m.categoria === cat)
-        .reduce((acc, m) => acc + m.movimentos, 0)
-      return { label: snap.label, total }
-    })
-    const nonZero = vals.filter((v) => v.total > 0)
-    if (nonZero.length > 0) {
-      lines.push(
-        `  ${cat}: ` + nonZero.map((v) => `${v.label} ${formatEur(v.total)}`).join(' → ')
-      )
+    const valorAtual = current.movements
+      .filter((m) => m.acao === 'Despesa' && m.categoria === cat)
+      .reduce((acc, m) => acc + m.movimentos, 0)
+
+    const valorAnterior = previous.movements
+      .filter((m) => m.acao === 'Despesa' && m.categoria === cat)
+      .reduce((acc, m) => acc + m.movimentos, 0)
+
+    const diff = valorAtual - valorAnterior
+
+    if (diff > 0) {
+      aumentaram.push(`  - ${cat}: +${formatEur(diff)} (${formatEur(valorAnterior)} → ${formatEur(valorAtual)})`)
+    } else if (diff < 0) {
+      diminuiram.push(`  - ${cat}: ${formatEur(diff)} (${formatEur(valorAnterior)} → ${formatEur(valorAtual)})`)
+    } else if (valorAtual > 0) {
+      iguais.push(`  - ${cat}: ${formatEur(valorAtual)} (sem alteração)`)
     }
   })
 
-  return lines.join('\n') || 'Sem dados de tendência.'
+  return `
+CATEGORIAS QUE AUMENTARAM vs mês anterior:
+${aumentaram.length > 0 ? aumentaram.join('\n') : '  Nenhuma.'}
+
+CATEGORIAS QUE DIMINUÍRAM vs mês anterior:
+${diminuiram.length > 0 ? diminuiram.join('\n') : '  Nenhuma.'}
+
+CATEGORIAS SEM ALTERAÇÃO:
+${iguais.length > 0 ? iguais.join('\n') : '  Nenhuma.'}
+`.trim()
 }
 
 export function buildFinancialContext(data: FinancialContextInput): string {
@@ -114,15 +131,14 @@ export function buildFinancialContext(data: FinancialContextInput): string {
 
 REGRAS:
 - Responde APENAS sobre finanças pessoais e dados desta aplicação.
-- Qualquer outro tema: responde "Posso ajudar apenas com informações financeiras da aplicação."
-- Usa sempre € para valores. Responde em português europeu, de forma clara e concisa.
-- Nunca inventes dados. Usa APENAS os dados abaixo.
-- Podes comparar meses, identificar tendências e responder perguntas históricas com os dados do HISTÓRICO.
-- Responde de forma MUITO concisa e direta — máximo 3 a 5 linhas.
+- Responde ESTRITAMENTE ao que foi perguntado — nada mais, nada menos.
+- Se perguntarem o que aumentou, mostra APENAS o que aumentou. Nunca incluas dados não solicitados.
 - Vai direto ao dado. Sem introduções, sem explicações desnecessárias.
 - Usa listas curtas quando listares valores (máximo 4 itens).
 - Nunca repitas a pergunta do utilizador na resposta.
-- Nunca uses frases como "Claro!", "Com base nos dados..." ou "Certamente!".
+- Usa sempre € para valores. Responde em português europeu, de forma MUITO concisa — máximo 3 a 5 linhas.
+- Qualquer outro tema não financeiro: responde "Posso ajudar apenas com informações financeiras da aplicação." — EXCEPTO saudações.
+- Saudações ("Olá", "Bom dia", "Obrigado", "Até logo", etc.): responde de forma simpática, breve e natural. Podes mencionar que estás disponível para ajudar com finanças.
 
 DATA DE HOJE: ${new Date().toLocaleDateString('pt-PT')}
 MÊS VISUALIZADO: ${getMonthName(currentMonth)}
