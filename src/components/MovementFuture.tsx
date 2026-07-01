@@ -14,7 +14,6 @@ import numeral from 'numeral'
 import colorGenerator from '../utils/colorGenerator'
 
 export default function MovementFuture() {
-
   const router = useRouter()
 
   const { removeMovement, movimentosFuturos } = useContext(budgetContext)
@@ -39,7 +38,6 @@ export default function MovementFuture() {
     data.setHours(0, 0, 0, 0)
     return data > hoje
   })
-
 
   const confirmDelete = (documentId: string) => {
     return Alert.alert('Delete', `Are you sure you want to delete this Movement?`, [
@@ -66,9 +64,7 @@ export default function MovementFuture() {
     // Convert data to handle serialization(resolve passagem de parametros)
     const serializedItem = {
       ...item,
-      data: item.data instanceof Date
-        ? item.data.toISOString()
-        : item.data.toDate().toISOString(),
+      data: item.data instanceof Date ? item.data.toISOString() : item.data.toDate().toISOString(),
     }
 
     return (
@@ -107,11 +103,13 @@ export default function MovementFuture() {
           }}
         >
           {isFuture ? (
-            <Icon name="schedule" type="material" color="white" size={32} />
+            <Icon name='schedule' type='material' color='white' size={32} />
           ) : item.categoria && item.categoria.length > 0 ? (
-            <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>{item.categoria[0]}</Text>
+            <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
+              {item.categoria[0]}
+            </Text>
           ) : (
-            <Icon name="help-outline" type="ionicon" color="white" size={32} />
+            <Icon name='help-outline' type='ionicon' color='white' size={32} />
           )}
         </View>
         <ListItem.Content>
@@ -122,16 +120,19 @@ export default function MovementFuture() {
               fontSize: 17,
               alignSelf: 'flex-start',
               opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
-            }}>
+            }}
+          >
             {item.categoria}
           </ListItem.Title>
-          <ListItem.Subtitle style={{
-            color: isFuture ? 'gray' : 'black',
-            fontWeight: 'normal',
-            fontSize: 16,
-            alignSelf: 'flex-start',
-            opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
-          }}>
+          <ListItem.Subtitle
+            style={{
+              color: isFuture ? 'gray' : 'black',
+              fontWeight: 'normal',
+              fontSize: 16,
+              alignSelf: 'flex-start',
+              opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
+            }}
+          >
             {moment(item.data.toDate()).format('DD MMMM YYYY')}
           </ListItem.Subtitle>
         </ListItem.Content>
@@ -140,8 +141,8 @@ export default function MovementFuture() {
             color: isFuture
               ? '#6c757d' // 🔧 Cor especial para valores futuros
               : item.acao === 'Despesa'
-                ? 'red'
-                : 'green',
+              ? 'red'
+              : 'green',
             fontWeight: 'bold',
             fontSize: 17,
             alignSelf: 'flex-start',
@@ -154,21 +155,21 @@ export default function MovementFuture() {
     )
   }
   return (
-    <View >
-
+    <View style={{ flex: 1 }}>
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <Card.Title style={{ fontSize: 22, fontWeight: 'bold', color: '#006e61' }}>
           Itens Futuros: {futurosMovimentos.length}
         </Card.Title>
       </View>
 
-      <Card containerStyle={{
-        paddingHorizontal: 0,
-        borderTopStartRadius: 10,
-        borderTopEndRadius: 10,
-        borderColor: '#006e61',
-      }}>
-
+      <Card
+        containerStyle={{
+          paddingHorizontal: 0,
+          borderTopStartRadius: 10,
+          borderTopEndRadius: 10,
+          borderColor: '#006e61',
+        }}
+      >
         <FlatList data={futurosMovimentos} keyExtractor={(item) => item.id} renderItem={getItems} />
         {futurosMovimentos.length === 0 && (
           <Card>
