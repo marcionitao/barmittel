@@ -112,8 +112,13 @@ export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
 
         const saldo = receita - despesa - investimento
 
+        // filtra apenas movimentos até hoje (não futuros) para o estado movements
+        const movementsUpToToday = allMovements.filter((movement) => {
+          const movementDate = movement.data.toDate()
+          return movementDate <= today
+        })
 
-        setMovements(allMovements)
+        setMovements(movementsUpToToday)
         setReceita(receita)
         setDespesa(despesa)
         setInvestimento(investimento)
