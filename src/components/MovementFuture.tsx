@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router'
 import { Button, Icon, ListItem } from '@rneui/base'
 import { Card } from '@rneui/themed'
 import { useContext } from 'react'
-import { Alert, FlatList, Text, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
 
 import budgetContext from '../context/budgetContext'
 import type { Budget } from '../@types/budget'
@@ -13,18 +13,30 @@ import moment from 'moment'
 import numeral from 'numeral'
 import colorGenerator from '../utils/colorGenerator'
 
-export default function MovementFuture() {
-  const router = useRouter()
+interface MovementFutureProps {
+  movements?: Budget[]
+  selectedDate?: Date | null
+  onDelete?: (id: string) => void
+}
 
+export default function MovementFuture({ 
+  movements, 
+  selectedDate,
+  onDelete 
+}: MovementFutureProps) {
+  const router = useRouter()
   const { removeMovement, movimentosFuturos } = useContext(budgetContext)
 
-  // 🔧 Filtra apenas os movimentos com data futura
+  const sourceMovements = movements ?? movimentosFuturos ?? []
+  const deleteAction = onDelete ?? removeMovement
+
   const hoje = new Date()
-  // hoje.setHours(0, 0, 0, 0)
+  hoje.setHours(0, 0, 0, 0)
 
-  const futurosMovimentos = movimentosFuturos.filter((m) => {
+  const isFiltered = selectedDate !== null
+
+  const filteredMovements = sourceMovements.filter((m) => {
     let data
-
     if (m.data instanceof Date) {
       data = m.data
     } else if (typeof m.data?.toDate === 'function') {
@@ -34,38 +46,39 @@ export default function MovementFuture() {
     } else {
       return false
     }
-
     data.setHours(0, 0, 0, 0)
+    
+    if (selectedDate) {
+      const selDate = new Date(selectedDate)
+      selDate.setHours(0, 0, 0, 0)
+      return data.getTime() === selDate.getTime()
+    }
     return data > hoje
   })
 
   const confirmDelete = (documentId: string) => {
-    return Alert.alert('Delete', `Are you sure you want to delete this Movement?`, [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert('Eliminar', 'Tem a certeza que pretende eliminar este movimento?', [
+      { text: 'Cancelar', style: 'cancel' },
       {
-        text: 'OK',
-        onPress: () => {
-          removeMovement(documentId)
-        },
+        text: 'Eliminar',
+        onPress: () => deleteAction(documentId),
       },
     ])
   }
 
   const getItems = ({ item }: { item: Budget }) => {
-    // 🔧 converte Timestamp para Date se necessário(é usada para a data futura)
-    const data =
-      item.data instanceof Date
-        ? item.data
-        : (item.data as FirebaseFirestoreTypes.Timestamp).toDate()
+    const data = item.data instanceof Date
+      ? item.data
+      : (item.data as FirebaseFirestoreTypes.Timestamp).toDate()
 
-    // 🔧 verifica se a data é futura
     const isFuture = data > new Date()
 
-    // Convert data to handle serialization(resolve passagem de parametros)
     const serializedItem = {
       ...item,
       data: item.data instanceof Date ? item.data.toISOString() : item.data.toDate().toISOString(),
     }
+
+    const iconColor = colorGenerator()
 
     return (
       <ListItem.Swipeable
@@ -77,11 +90,7 @@ export default function MovementFuture() {
         onPress={() => router.push({ pathname: '/myForm', params: serializedItem })}
         rightContent={(reset) => (
           <Button
-            containerStyle={{
-              flex: 1,
-              justifyContent: 'center',
-              backgroundColor: 'red',
-            }}
+            containerStyle={styles.deleteButton}
             type='clear'
             icon={{ name: 'delete-outline', color: 'white' }}
             onPress={() => {
@@ -91,92 +100,104 @@ export default function MovementFuture() {
           />
         )}
       >
-        <View
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 24,
-            backgroundColor: colorGenerator(),
-            opacity: isFuture ? 0.5 : 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+        <View style={[styles.iconContainer, { backgroundColor: iconColor }]}>
           {isFuture ? (
-            <Icon name='schedule' type='material' color='white' size={32} />
+            <Icon name='schedule' type='material' color='white' size={28} />
           ) : item.categoria && item.categoria.length > 0 ? (
-            <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>
-              {item.categoria[0]}
-            </Text>
+            <Text style={styles.iconText}>{item.categoria[0]}</Text>
           ) : (
-            <Icon name='help-outline' type='ionicon' color='white' size={32} />
+            <Icon name='help-outline' type='ionicon' color='white' size={28} />
           )}
         </View>
         <ListItem.Content>
-          <ListItem.Title
-            style={{
-              color: isFuture ? 'gray' : 'black',
-              fontWeight: 'normal',
-              fontSize: 17,
-              alignSelf: 'flex-start',
-              opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
-            }}
-          >
+          <ListItem.Title style={styles.itemTitle}>
             {item.categoria}
           </ListItem.Title>
-          <ListItem.Subtitle
-            style={{
-              color: isFuture ? 'gray' : 'black',
-              fontWeight: 'normal',
-              fontSize: 16,
-              alignSelf: 'flex-start',
-              opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
-            }}
-          >
+          <ListItem.Subtitle style={styles.itemSubtitle}>
             {moment(item.data.toDate()).format('DD MMMM YYYY')}
           </ListItem.Subtitle>
         </ListItem.Content>
-        <ListItem.Title
-          style={{
-            color: isFuture
-              ? '#6c757d' // 🔧 Cor especial para valores futuros
-              : item.acao === 'Despesa'
-              ? 'red'
-              : 'green',
-            fontWeight: 'bold',
-            fontSize: 17,
-            alignSelf: 'flex-start',
-            opacity: isFuture ? 0.5 : 1, // 🔧 valor também acinzentado se futuro
-          }}
-        >
+        <ListItem.Title style={[
+          styles.itemValue,
+          { color: item.acao === 'Despesa' ? 'red' : 'green' }
+        ]}>
           {numeral(item.movimentos).format('0,0.00')}€
         </ListItem.Title>
       </ListItem.Swipeable>
     )
   }
-  return (
-    <View style={{ flex: 1 }}>
-      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Card.Title style={{ fontSize: 22, fontWeight: 'bold', color: '#006e61' }}>
-          Itens Futuros: {futurosMovimentos.length}
-        </Card.Title>
-      </View>
 
-      <Card
-        containerStyle={{
-          paddingHorizontal: 0,
-          borderTopStartRadius: 10,
-          borderTopEndRadius: 10,
-          borderColor: '#006e61',
-        }}
-      >
-        <FlatList data={futurosMovimentos} keyExtractor={(item) => item.id} renderItem={getItems} />
-        {futurosMovimentos.length === 0 && (
-          <Card>
-            <Card.Title>Nenhum Movimento Futuro</Card.Title>
-          </Card>
-        )}
-      </Card>
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={filteredMovements}
+        keyExtractor={(item) => item.id}
+        renderItem={getItems}
+        style={styles.flatList}
+        contentContainerStyle={styles.contentContainer}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              {isFiltered 
+                ? 'Nenhum movimento neste dia'
+                : 'Nenhum Movimento Futuro'
+              }
+            </Text>
+          </View>
+        }
+      />
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  flatList: {
+    flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  iconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  itemTitle: {
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  itemSubtitle: {
+    fontSize: 14,
+    color: '#666',
+  },
+  itemValue: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  deleteButton: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'red',
+  },
+})
