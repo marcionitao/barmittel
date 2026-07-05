@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient'
 
 
-const version = '1.2.0'
+const version = '1.3.0'
 
 const FEATURES = [
   {
