@@ -5,11 +5,13 @@ import { useState } from 'react'
 import CreateMovementModal from '../../src/components/CreateMovementModal'
 import { AssistantFAB } from '../../src/components/assistant/AssistantFAB'
 import { AssistantModal } from '../../src/components/assistant/AssistantModal'
+import AboutModal from '../../src/components/AboutModal'
 
 export default function TabsLayout() {
 
   const [modalVisible, setModalVisible] = useState(false)
   const [assistantVisible, setAssistantVisible] = useState(false)
+  const [aboutVisible, setAboutVisible] = useState(false)
 
   return (
     <>
@@ -40,6 +42,15 @@ export default function TabsLayout() {
             title: 'Home',
 
             headerTitle: 'BARMITTEL',
+
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={() => setAboutVisible(true)}
+                style={{ marginRight: 16, padding: 4 }}
+              >
+                <Feather name="info" size={22} color="#006E61" />
+              </TouchableOpacity>
+            ),
 
             tabBarIcon: ({ color, size }) => (
               <Feather name="home" size={size} color={color} />
@@ -135,6 +146,10 @@ export default function TabsLayout() {
       <AssistantModal
         visible={assistantVisible}
         onClose={() => setAssistantVisible(false)}
+      />
+      <AboutModal
+        visible={aboutVisible}
+        onClose={() => setAboutVisible(false)}
       />
     </>
   )
