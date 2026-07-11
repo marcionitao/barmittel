@@ -8,6 +8,27 @@ export type Budget = {
   data: Date | FirebaseFirestoreTypes.Timestamp
 }
 
+export type SearchTypeFilter = 'Despesa' | 'Receita' | 'Investimento'
+
+export type SearchPeriodFilter =
+  | '1month'
+  | '3months'
+  | '6months'
+  | '1year'
+  | '2years'
+  | 'all'
+
+export interface SearchFilters {
+  type?: SearchTypeFilter
+  period?: SearchPeriodFilter
+}
+
+export interface SearchResult {
+  movements: Budget[]
+  totalCount: number
+  searchDuration: number
+}
+
 export type BudgetContextType = {
   movements: Budget[]
   saldo: number
@@ -24,4 +45,18 @@ export type BudgetContextType = {
   handleNextMonth: () => void
   handleCurrentMonth: () => void
   movimentosFuturos: Budget[]
+  // Novos campos para a Fase 1 - Sistema de Busca
+  searchResults: Budget[]
+  isSearching: boolean
+  searchQuery: string
+  searchFilters: SearchFilters
+  searchResultsCount: number
+  searchDuration: number
+  searchError: string | null
+  searchMovements: (
+    query: string,
+    filters?: SearchFilters,
+  ) => Promise<void>
+  clearSearch: () => void
+  setSearchFilters: (filters: SearchFilters) => void
 }

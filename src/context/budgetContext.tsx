@@ -1,6 +1,6 @@
 import firestore, { firebase } from '@react-native-firebase/firestore'
-import { createContext, useEffect, useState } from 'react'
-import { Budget, BudgetContextType } from '../@types/budget'
+import { createContext, useEffect, useState, useCallback } from 'react'
+import { Budget, BudgetContextType, SearchFilters } from '../@types/budget'
 import { Keyboard } from 'react-native'
 
 // create context
@@ -20,7 +20,38 @@ export const BudgetContext = createContext<BudgetContextType>({
   handleNextMonth: () => { },
   handleCurrentMonth: () => { },
   movimentosFuturos: [],
+  // Fase 1 - Busca
+  searchResults: [],
+  isSearching: false,
+  searchQuery: '',
+  searchFilters: {},
+  searchResultsCount: 0,
+  searchDuration: 0,
+  searchError: null,
+  searchMovements: async () => { },
+  clearSearch: () => { },
+  setSearchFilters: () => { },
 })
+
+const getDateFromPeriod = (period?: SearchFilters['period']): Date | null => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  if (!period || period === 'all') return null
+
+  const daysMap: Record<string, number> = {
+    '1month': 30,
+    '3months': 90,
+    '6months': 180,
+    '1year': 365,
+    '2years': 730,
+  }
+
+  const days = daysMap[period] || 30
+  const date = new Date(today)
+  date.setDate(date.getDate() - days)
+  return date
+}
 
 // create provider
 export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
@@ -35,6 +66,14 @@ export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [movimentosFuturos, setMovimentosFuturos] = useState<Budget[]>([])
 
+  // Fase 1 - Estados de busca
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchFilters, setSearchFiltersState] = useState<SearchFilters>({})
+  const [searchResults, setSearchResults] = useState<Budget[]>([])
+  const [searchResultsCount, setSearchResultsCount] = useState(0)
+  const [searchDuration, setSearchDuration] = useState(0)
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchError, setSearchError] = useState<string | null>(null)
 
   const handlePreviousMonth = () => {
     const prevMonth = new Date(currentMonth)
@@ -154,6 +193,92 @@ export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe()
   }, [])
 
+  // =========================================
+  // FASE 1: Função de Busca
+  // =========================================
+  const searchMovements = useCallback(async (
+    query: string,
+    filters?: SearchFilters
+  ) => {
+    const startTime = performance.now()
+    setIsSearching(true)
+    setSearchError(null)
+
+    try {
+      const effectiveFilters = filters || searchFilters
+
+      // Construir query base
+      let firestoreQuery = firestore().collection('orcamento')
+
+      // Aplicar filtro de período
+      const startDate = getDateFromPeriod(effectiveFilters.period)
+      if (startDate) {
+        firestoreQuery = firestoreQuery.where('data', '>=', startDate)
+      }
+
+      // Aplicar filtro de tipo (ação)
+      if (effectiveFilters.type) {
+        firestoreQuery = firestoreQuery.where('acao', '==', effectiveFilters.type)
+      }
+
+      // Ordenar por data descendente
+      firestoreQuery = firestoreQuery.orderBy('data', 'desc')
+
+      // Executar query
+      const querySnapshot = await firestoreQuery.limit(500).get()
+
+      let results = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      } as Budget))
+
+      // Filtrar por texto (categoria e descrição) - client-side
+      if (query && query.trim()) {
+        const normalizedQuery = query.toLowerCase().trim()
+        results = results.filter((movement) => {
+          const categoria = (movement.categoria || '').toLowerCase()
+          const descricao = (movement.descricao || '').toLowerCase()
+          return (
+            categoria.includes(normalizedQuery) ||
+            descricao.includes(normalizedQuery)
+          )
+        })
+      }
+
+      const endTime = performance.now()
+
+      setSearchResults(results)
+      setSearchResultsCount(results.length)
+      setSearchDuration(Math.round(endTime - startTime))
+      setSearchQuery(query)
+      setSearchFiltersState(effectiveFilters)
+
+    } catch (error: any) {
+      console.error('Search error:', error)
+      setSearchError(error.message || 'Erro ao realizar pesquisa')
+      setSearchResults([])
+      setSearchResultsCount(0)
+    } finally {
+      setIsSearching(false)
+    }
+  }, [searchFilters])
+
+  const clearSearch = useCallback(() => {
+    setSearchQuery('')
+    setSearchResults([])
+    setSearchResultsCount(0)
+    setSearchDuration(0)
+    setSearchError(null)
+    setSearchFiltersState({})
+  }, [])
+
+  const setSearchFilters = useCallback((filters: SearchFilters) => {
+    setSearchFiltersState(filters)
+  }, [])
+
+  // =========================================
+  // CRUD Operations
+  // =========================================
   const addMovement = async (movement: Budget) => {
     const timestamp = firebase.firestore.Timestamp.now()
     const dateCondition = movement.data === undefined ? timestamp : movement.data
@@ -233,6 +358,17 @@ export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
         handleNextMonth,
         handleCurrentMonth,
         movimentosFuturos,
+        // Fase 1 - Busca
+        searchResults,
+        isSearching,
+        searchQuery,
+        searchFilters,
+        searchResultsCount,
+        searchDuration,
+        searchError,
+        searchMovements,
+        clearSearch,
+        setSearchFilters,
       }}
     >
       {children}

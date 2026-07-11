@@ -113,16 +113,16 @@ export default function TabsLayout() {
           }}
         />
 
-        {/* ABOUT */}
+        {/* SEARCH */}
         <Tabs.Screen
-          name="myAbout"
+          name="mySearch"
           options={{
-            title: 'About',
+            title: 'Pesquisar',
 
-            headerTitle: 'About',
+            headerTitle: 'Pesquisar',
 
             tabBarIcon: ({ color, size }) => (
-              <Feather name="info" size={size} color={color} />
+              <Feather name="search" size={size} color={color} />
             ),
           }}
         />
