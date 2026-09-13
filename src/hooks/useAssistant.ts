@@ -63,7 +63,7 @@ export function useAssistant() {
             Authorization: `Bearer ${MISTRAL_API_KEY}`,
           },
           body: JSON.stringify({
-            model: 'mistral-large-latest',
+            model: 'mistral-tiny',
             messages: [{ role: 'system', content: systemPrompt }, ...chatHistory],
             max_tokens: 400,
           }),
