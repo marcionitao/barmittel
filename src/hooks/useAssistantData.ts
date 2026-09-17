@@ -15,7 +15,7 @@ export interface MonthSnapshot {
   movements: Budget[]
 }
 
-const MONTHS_TO_FETCH = 6
+const MONTHS_TO_FETCH = 12
 
 export function useAssistantData() {
   const [history, setHistory] = useState<MonthSnapshot[]>([])

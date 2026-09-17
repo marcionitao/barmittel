@@ -1,6 +1,6 @@
 // Modal completo com header, lista de mensagens e sugestões. 
 // Orquestra toda a UI do chat, consome useAssistant.ts
-import React, { useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
 import {
   Modal, View, Text, StyleSheet, FlatList,
   TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator,
@@ -28,12 +28,6 @@ export function AssistantModal({ visible, onClose }: Props) {
   const { messages, isLoading, isLoadingHistory, error, sendMessage, clearMessages } = useAssistant()
 
   const listRef = useRef<FlatList>(null)
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 100)
-    }
-  }, [messages])
 
   const handleClose = () => {
     clearMessages()
@@ -93,6 +87,7 @@ export function AssistantModal({ visible, onClose }: Props) {
               renderItem={({ item }) => <ChatBubble message={item} />}
               contentContainerStyle={styles.list}
               showsVerticalScrollIndicator={false}
+              onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
             />
           )}
 

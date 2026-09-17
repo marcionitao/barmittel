@@ -140,16 +140,16 @@ export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
           const movementDate = movement.data.toDate()
           if (movementDate <= today) {
             if (movement.acao === 'Despesa') {
-              despesa += movement.movimentos
+              despesa += Number(movement.movimentos) || 0
             } else if (movement.acao === 'Receita') {
-              receita += movement.movimentos
+              receita += Number(movement.movimentos) || 0
             } else if (movement.acao === 'Investimento') {
-              investimento += movement.movimentos
+              investimento += Number(movement.movimentos) || 0
             }
           }
         })
 
-        const saldo = receita - despesa - investimento
+        const saldo = Math.round((receita - despesa - investimento) * 100) / 100
 
         // filtra apenas movimentos até hoje (não futuros) para o estado movements
         const movementsUpToToday = allMovements.filter((movement) => {
@@ -158,9 +158,9 @@ export const BudgetProvider = ({ children }: { children: React.ReactNode }) => {
         })
 
         setMovements(movementsUpToToday)
-        setReceita(receita)
-        setDespesa(despesa)
-        setInvestimento(investimento)
+        setReceita(Math.round(receita * 100) / 100)
+        setDespesa(Math.round(despesa * 100) / 100)
+        setInvestimento(Math.round(investimento * 100) / 100)
         setSaldo(saldo)
       }, (error) => {
         console.log('Erro no listener:', error)

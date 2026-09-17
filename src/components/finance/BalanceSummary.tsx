@@ -47,7 +47,7 @@ export default function BalanceSummary({
               color: '#222',
             }}
           >
-            {numeral(saldo).format('0,0.00')}€
+            {numeral(saldo || 0).format('0,0.00')}€
           </Text>
         )}
       </View>

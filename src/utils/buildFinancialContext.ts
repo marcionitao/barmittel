@@ -67,6 +67,87 @@ function buildHistorySummary(history: MonthSnapshot[]): string {
     .join('\n')
 }
 
+function buildYearlyCategoryBreakdown(history: MonthSnapshot[]): string {
+  if (history.length === 0) return 'Sem histórico disponível.'
+
+  const year = new Date().getFullYear()
+  const yearMovements = history
+    .filter((s) => s.year === year)
+    .flatMap((s) => s.movements)
+
+  const despesas = yearMovements.filter((m) => m.acao === 'Despesa')
+  if (despesas.length === 0) return 'Sem despesas este ano.'
+
+  const map: Record<string, { count: number; total: number }> = {}
+  despesas.forEach((m) => {
+    map[m.categoria] = map[m.categoria] || { count: 0, total: 0 }
+    map[m.categoria].count++
+    map[m.categoria].total += m.movimentos
+  })
+
+  return Object.entries(map)
+    .sort(([, a], [, b]) => b.total - a.total)
+    .map(([cat, v]) => `  - ${cat}: ${v.count} transações, ${formatEur(v.total)}`)
+    .join('\n')
+}
+
+function buildYearlyMovementsList(history: MonthSnapshot[]): string {
+  if (history.length === 0) return 'Sem histórico disponível.'
+
+  const year = new Date().getFullYear()
+  const yearMovements = history
+    .filter((s) => s.year === year)
+    .flatMap((s) => s.movements)
+
+  if (yearMovements.length === 0) return 'Nenhum movimento este ano.'
+
+  return yearMovements
+    .slice(0, 200)
+    .sort((a, b) => a.data.toDate().getTime() - b.data.toDate().getTime())
+    .map((m) => {
+      const date = formatDate(m.data)
+      const valor = formatEur(m.movimentos)
+      const desc = m.descricao ? ` — "${m.descricao}"` : ''
+      return `  [${date}] ${m.acao.toUpperCase()} | ${m.categoria} | ${valor}${desc}`
+    })
+    .join('\n')
+}
+
+function buildRecentByCategory(history: MonthSnapshot[]): string {
+  if (history.length === 0) return 'Sem histórico disponível.'
+
+  const year = new Date().getFullYear()
+  const yearMovements = history
+    .filter((s) => s.year === year)
+    .flatMap((s) => s.movements)
+    .filter((m) => m.acao === 'Despesa')
+    .sort((a, b) => b.data.toDate().getTime() - a.data.toDate().getTime())
+
+  if (yearMovements.length === 0) return 'Nenhuma despesa este ano.'
+
+  const byCategory: Record<string, Budget[]> = {}
+  yearMovements.forEach((m) => {
+    byCategory[m.categoria] = byCategory[m.categoria] || []
+    if (byCategory[m.categoria].length < 3) {
+      byCategory[m.categoria].push(m)
+    }
+  })
+
+  return Object.entries(byCategory)
+    .map(([cat, movs]) =>
+      `  ${cat} (últimos):\n` +
+      movs
+        .map((m) => {
+          const date = formatDate(m.data)
+          const valor = formatEur(m.movimentos)
+          const desc = m.descricao ? ` — "${m.descricao}"` : ''
+          return `    [${date}] ${valor}${desc}`
+        })
+        .join('\n')
+    )
+    .join('\n')
+}
+
 function buildCategoryTrend(history: MonthSnapshot[]): string {
   if (history.length < 2) return 'Histórico insuficiente.'
 
@@ -131,10 +212,11 @@ export function buildFinancialContext(data: FinancialContextInput): string {
 
 REGRAS:
 - Responde APENAS sobre finanças pessoais e dados desta aplicação.
+- Usa APENAS os dados fornecidos neste contexto. NUNCA inventes, completes ou estimes valores, datas ou transações que não estejam no contexto. Se o dado não existir, diz que não tens essa informação.
 - Responde ESTRITAMENTE ao que foi perguntado — nada mais, nada menos.
 - Se perguntarem o que aumentou, mostra APENAS o que aumentou. Nunca incluas dados não solicitados.
 - Vai direto ao dado. Sem introduções, sem explicações desnecessárias.
-- Usa listas curtas quando listares valores (máximo 4 itens).
+- Por defeito usa listas curtas (máximo 4 itens), MAS se o utilizador pedir explicitamente para listar (ex: "Liste as datas e valores"), lista TODOS os itens correspondentes, um por linha.
 - Nunca repitas a pergunta do utilizador na resposta.
 - Usa sempre € para valores. Responde em português europeu, de forma MUITO concisa — máximo 3 a 5 linhas.
 - Qualquer outro tema não financeiro: responde "Posso ajudar apenas com informações financeiras da aplicação." — EXCEPTO saudações.
@@ -158,8 +240,17 @@ ${buildCategoryBreakdown(movements)}
 MOVIMENTOS FUTUROS (${movimentosFuturos.length}):
 ${buildMovementsList(movimentosFuturos)}
 
-HISTÓRICO DOS ÚLTIMOS 6 MESES:
+HISTÓRICO DOS ÚLTIMOS 12 MESES:
 ${buildHistorySummary(history)}
+
+DESPESAS POR CATEGORIA (ANO ATUAL):
+${buildYearlyCategoryBreakdown(history)}
+
+MOVIMENTOS DO ANO ATUAL (individuais, para listar valores):
+${buildYearlyMovementsList(history)}
+
+ÚLTIMOS GASTOS POR CATEGORIA (mais recentes primeiro — usar para perguntas de "últimos"):
+${buildRecentByCategory(history)}
 
 TENDÊNCIA POR CATEGORIA (histórico):
 ${buildCategoryTrend(history)}
